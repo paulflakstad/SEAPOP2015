@@ -1,0 +1,294 @@
+@charset "utf-8";
+
+/* Small */
+@media (min-width:310px) {
+/* BEGIN npweb-r.css*/
+#featured-prev,
+#featured-next,
+#featured-position {
+	width:8%;
+}
+
+/*
+.news-list-itemtext {
+	width:68%;
+	float:right;
+}
+#identity span {
+	width: 65%;
+}
+
+.portal.right .portal-box:nth-child(1n+1) {
+	margin-right:0;
+	float:none;
+}
+.portal.right .portal-box:nth-child(2n+2) {
+	margin-left:0;
+	float:none;
+}
+
+#icon-button-list li {
+	width:33.3333%;
+}
+#icon-button-list li:nth-child(4n+4) {
+	clear:left;
+}
+*/
+
+#mob_nav_quicklinks {
+	float:left;
+	clear:none;
+}
+.person .contact-info-text {
+	clear:none;
+}
+}
+
+/* Medium */
+/*@media (min-width:25em) {*/
+/* 25em = 400px in most default browsers */
+@media (min-width:400px) {
+
+.media.pull-right,
+.media.pull-left {
+	width:45%;
+	overflow:hidden;
+	clear:right;
+}
+.media.xs {
+	width:20%;
+}
+.media.thumb {
+	width:30%;
+}
+.media.pull-right {
+	margin-left:2%;
+}
+.media.pull-left {
+	margin-right:2%;
+}
+
+.paragraph .textbox {
+    clear:right;
+    float:right;
+    margin:0 0 1em 1em;
+    width:45%;
+    display:block;
+}
+.paragraph .textbox h5,
+.paragraph .textbox .textbox-content {
+	margin:0;
+	padding:0;
+}
+.paragraph .textbox h5 {
+	padding:0 0 0.2em 0;
+	margin-bottom:0.2em;
+}
+
+/* BEGIN npweb-r.css */
+.featured-text p {
+	display:block;
+}
+#icon-button-list li {
+}
+#icon-button-list li:nth-child(4n+4) {
+    clear:none;
+}
+#nav_quicklinks_wrap {
+	display:none;
+}
+
+.quotation {
+	padding:1em 5em 0 5em;
+	background:transparent url("quote.png") top left no-repeat;
+}
+.event-metadata-label {
+	float:left;
+}
+/* END npweb-r.css */
+
+/* BEGIN temp.css */
+.featured-box,
+.featured-box.pull-left,
+.featured-box.pull-right {
+	margin:0;
+}
+/* float all portal boxes */
+.portal-box .boxes > div,
+.featured-box .boxes > div,
+.portal .news-list .news {
+	float:left;
+}
+
+.quadruple .boxes > .span1,
+.quadruple .boxes > .span2,
+.triple .boxes > .span1,
+.triple .boxes > .span2,
+.double .boxes > .span1,
+.portal .news-list .news {
+	width:50%;
+}
+
+.quadruple .boxes > .span3 { 
+	width:100%;
+	margin:0 0 2% 0;
+}
+
+/* Remove left margin on boxes to the far left */
+.double .boxes > div:nth-child(odd),
+.quadruple .boxes > div:nth-child(2n+1),
+.triple .boxes > div:nth-child(odd),
+.portal .news-list .news:nth-child(odd) {
+	margin-left:0;
+        margin-right:0;
+	clear:left;
+	/*border-bottom:10px solid orange;*/
+}
+/* Remove right margin on boxes to the far right */
+.double .boxes > div:nth-child(even),
+.quadruple .boxes > div:nth-child(2n+2),
+.triple .boxes > div:nth-child(even),
+.portal .news-list .news:nth-child(even) {
+	margin-right:0;
+        margin-left:0;
+	/*border-bottom:10px solid green;*/
+}
+
+
+
+/**
+* Layout groups and boxes
+*/
+/*.layout-group {
+}
+.layout-group > .layout-box {
+}
+.layout-group.double > .layout-box,
+.layout-group.double > .boxes > .layout-box,
+.layout-group.triple > .layout-box,
+.layout-group.triple > .boxes > .layout-box {
+    width:100%;
+    float:none;
+}
+*/
+/*
+.layout-group.triple > .layout-box.span2,
+.layout-group.triple > .boxes > .layout-box.span2,
+.layout-group.triple > .layout-box:first-child
+.layout-group.triple > .boxes > .layout-box:first-child,*/
+.card-h > .card-image-wrapper {
+    width:100%;
+}
+.layout-group .cta {
+   /* display:block;
+    float:left;
+    width:100%;
+    margin:2em 0;
+    clear:both;*/
+}
+.cta-huge .cta-title {
+    text-align:left;
+}
+.cta-huge .triple .span2.cta-title { /* Handle complex cta-huge buttons (those with layout-group inside them) */
+    text-align:center;
+}
+.cta-huge.cta-frontpage .cta-title p {
+    min-height:3em;
+}
+
+/*#identity span { width: 65%; }*/
+/* END temp.css */
+/*a.cta.more,*/
+nav.pagination a {
+    display:inline-block;
+    /*float:left;*/
+    margin:0 0.5em 0.5em 0;
+}
+nav.pagination a {
+    float:none;
+}
+nav .pageNumWrap {
+    width:66%;
+    height:auto;
+    overflow:visible;
+}
+
+
+
+
+
+/* New layout pattern test */
+.layout-group.double .layout-box,
+.layout-group.quadruple .layout-box,
+.layout-group.quadruple .layout-box {
+	width:50%;
+	float:left;
+}
+.layout-group.triple .layout-box {
+	width:33.333%;
+	float:left;
+}
+.layout-group.triple .span2 {
+	width:66.666%;
+	float:left;
+}
+
+.layout-group.triple > .layout-box:nth-of-type(3n+4), /* 4, 7, 10, ...*/
+.layout-group.double > .layout-box:nth-of-type(2n+3), /* 3, 5, 7, 9, ... */
+.layout-group.quadruple > .layout-box:nth-of-type(2n+3) { /* 3, 5, 7, 9, ... */
+	clear:left;
+}
+.layout-group.layout-combo > .layout-box,
+.layout-group.double.layout-combo > .layout-box, 
+.layout-group.triple.layout-combo > .layout-box, 
+.layout-group.quadruple.layout-combo > .layout-box {
+	clear:none;
+}
+
+/* Combos and nesting */
+.layout-group.single .layout-box,
+.layout-group.double .span2,
+.layout-group.double .layout-box.span2,
+.layout-group.triple .span3,
+.layout-group.triple .layout-box.span3,
+.layout-group.quadruple .span3,
+.layout-group.quadruple .span4,
+.layout-group.quadruple .layout-box.span4,
+.layout-group.double .double .layout-box,
+.layout-group.double .triple .layout-box,
+.layout-group.double .single .layout-box,
+.layout-group.triple .double .layout-box,
+.layout-group.triple .triple .layout-box,
+.layout-group.triple .triple .layout-box.span2,
+.layout-group.triple .single .layout-box {
+	width:100%;
+}
+.layout-group.triple .span2 .double .layout-box,
+.layout-group.quadruple .layout-box,
+.layout-group.quadruple .span2,
+.layout-group.quadruple .span3 {
+	width:50%;
+}
+.layout-group.quadruple .span1.force-width {
+	width:25%;
+}
+.layout-group.triple .layout-box .single .triple .layout-box,
+.layout-group.triple .span2 .triple .layout-box,
+.layout-group.triple .span1.force-width {
+	width:33.3333%;
+}
+.layout-group.triple .layout-box .single .triple .layout-box.span2,
+.layout-group.triple .span2 .triple .layout-box.span2 {
+	width:66.6666%;
+}
+.layout-group.quadruple .span3.force-width {
+	width:75%;
+}
+}
+
+
+
+@media (min-width:480px) {
+
+
+}

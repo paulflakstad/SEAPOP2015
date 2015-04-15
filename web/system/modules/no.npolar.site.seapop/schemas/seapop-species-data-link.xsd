@@ -1,0 +1,41 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
+    <xsd:element name="SeapopSpeciesDataLinks" type="OpenCmsSeapopSpeciesDataLinks" />
+
+    <xsd:complexType name="OpenCmsSeapopSpeciesDataLinks">
+        <xsd:sequence>
+            <xsd:element name="SeapopSpeciesDataLink" type="OpenCmsSeapopSpeciesDataLink" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsSeapopSpeciesDataLink">
+        <xsd:sequence>
+            <xsd:element name="Type" type="OpenCmsString" />
+            <xsd:element name="URL" type="OpenCmsVarLink" />
+            <xsd:element name="NumOfYears" type="OpenCmsString" />
+            <xsd:element name="Comment" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundles>
+                <xmlbundle name="no.npolar.site.seapop">
+                    <bundle locale="en">
+                        <resource key="label.OpenCmsSeapopSpeciesData.Type">Type</resource>                    
+                        <resource key="label.OpenCmsSeapopSpeciesData.URL">URL</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesData.NumOfYears">Number of years</resource>    
+                        <resource key="label.OpenCmsSeapopSpeciesData.Comment">Comment</resource>    
+                    </bundle>
+                </xmlbundle>
+            </resourcebundles>
+            <layouts>
+                <layout element="Type" widget="SelectorWidget" configuration="Population|Reproduction|Survival|Diet|Timing" />
+            </layouts>
+        </xsd:appinfo>
+    </xsd:annotation>
+    
+</xsd:schema>

@@ -1,0 +1,42 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/no.npolar.site.seapop/schemas/seapop-species-data-link.xsd"/>
+
+    <xsd:element name="SeapopSpeciesDataLinkss" type="OpenCmsSeapopSpeciesDataLinkss" />
+
+    <xsd:complexType name="OpenCmsSeapopSpeciesDataLinkss">
+        <xsd:sequence>
+            <xsd:element name="SeapopSpeciesDataLinks" type="OpenCmsSeapopSpeciesDataLinks" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsSeapopSpeciesDataLinks">
+        <xsd:sequence>
+            <xsd:element name="Location" type="OpenCmsString" />
+            <xsd:element name="DataLink" type="OpenCmsSeapopSpeciesDataLink" minOccurs="1" maxOccurs="5" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundles>
+                <xmlbundle name="no.npolar.site.seapop">
+                    <bundle locale="en">
+                        <resource key="label.OpenCmsSeapopSpeciesData.Location">Location</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesData.DataLink">Data link</resource>
+                    </bundle>
+                </xmlbundle>
+            </resourcebundles>
+            <mappings>
+                <mapping element="Location" mapto="propertyList:seapop.locations" />
+            </mappings>
+            <layouts>
+                <layout element="Location" widget="SelectorWidget" 
+                        configuration="Spitsbergen|Bjørnøya|Hornøya|Hjelmsøya|Grindøya|Jan Mayen|Anda|Røst|Sør-Helgeland|Sklinna|Runde|Hordaland|Rogaland|Vest-Agder|Ytre Oslofjord" />
+            </layouts>
+        </xsd:appinfo>
+    </xsd:annotation>
+    
+</xsd:schema>
