@@ -219,6 +219,7 @@ final String NAV_MAIN_URI       = "/menu.html";
 //final String LANGUAGE_SWITCH    = "/system/modules/no.npolar.common.lang/elements/sibling-switch.jsp";
 final String HOME_URI           = cms.link("/" + locale + "/");
 final String SERP_URI		= cms.link("/" + locale + "/" + (locale.equalsIgnoreCase("no") ? "sok" : "search") + ".html");
+final String SKIP_TO_CONTENT    = locale.equalsIgnoreCase("no") ? "Hopp til innholdet" : "Skip to content";
 final boolean EDITABLE_MENU     = true;
 
 String menuTemplate = null;
@@ -325,7 +326,7 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
     </script>
     <%}%>
     <div id="wrapwrap"><div id="wrap">
-    <a id="skipnav" tabindex="1" href="#contentstart">Hopp til innholdet</a>
+    <a id="skipnav" tabindex="1" href="#contentstart"><%= SKIP_TO_CONTENT %></a>
     <div id="jsbox"></div>
     <div id ="top">
         <header id="header" class="no">
