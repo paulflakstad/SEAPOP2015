@@ -1,5 +1,5 @@
 <%-- 
-    Document   : table-species-data-all.jsp
+    Document   : table-species-data-specific-type.jsp
     Created on : Apr 8, 2015
     Author     : Paul-Inge Flakstad, Norwegian Polar Institute <flakstad at npolar.no>
 --%><%@page contentType="text/html" pageEncoding="UTF-8" 
@@ -24,54 +24,43 @@
     
     final String dataFilesFolder = "/no/artsdata/";
     SpeciesDataCollection speciesDataEntries = new SpeciesDataCollection(dataFilesFolder, cms);
-    
-    List<String> excludeTypes = Arrays.asList( new String[] { SpeciesDataLinkType.TIMING } );
+	
+	Iterator<SpeciesData> iSpeciesDataEntries = null;
+	
+	String type = cms.getRequest().getParameter("type");
+	if (type == null || type.isEmpty()) {
+		out.println("Error printing data table: No type set (" + type + ").");
+		return;
+	}
     
 %>
-        
         <div class="paragraph">
-            <table class="species-data-link-table species-data-link-table-all-combined">
+            <h2><%= new SpeciesDataLinkType(type).getLabel(cms) %></h2>
+            <table class="species-data-link-table">
                 <tr>
                     <th rowspan="3"></th>
                     <th colspan="8"><%= cms.labelUnicode("label.seapop-species-data.classification.pelagic") %></th>
                     <th rowspan="2"><%= cms.labelUnicode("label.seapop-species-data.classification.ice-related") %></th>
                     <th colspan="9"><%= cms.labelUnicode("label.seapop-species-data.classification.coastal-bound") %></th>
-                    <th rowspan="2" colspan="5"><%= cms.labelUnicode("label.seapop-species-data.number-of-series") %></th>
+                    <th rowspan="2" colspan="5"><%= cms.labelUnicode("label.seapop-species-data.total") %></th>
                 </tr>
                 <tr>
                     <th colspan="6"><%= cms.labelUnicode("label.seapop-species-data.classification.diving") %></th>
                     <th colspan="3"><%= cms.labelUnicode("label.seapop-species-data.classification.surface-bound") %></th>
                     <th colspan="5"><%= cms.labelUnicode("label.seapop-species-data.classification.surface-bound") %></th>
-                    <th colspan="4"><%= cms.labelUnicode("label.seapop-species-data.classification.diving") %></th>                
+                    <th colspan="4"><%= cms.labelUnicode("label.seapop-species-data.classification.diving") %></th>
                 </tr>
                 <tr class="th-v">
                     <%
-                    Iterator<SpeciesData> iSpeciesDataEntries = speciesDataEntries.get().iterator();
+                    iSpeciesDataEntries = speciesDataEntries.get().iterator();
                     while (iSpeciesDataEntries.hasNext()) {
                         out.println("<th scope=\"col\"><span>" + iSpeciesDataEntries.next().getName() + "</span></th>");
                     }
                     %>
-
-                    <%
-                    List<String> dataTypes = new ArrayList<String>(SpeciesDataLinkType.TYPES_ORDER_DEFAULT);
-                    dataTypes.removeAll(excludeTypes);
-                    Iterator<String> iDataTypes = dataTypes.iterator();
-                    while (iDataTypes.hasNext()) {
-                        String dataType = iDataTypes.next();
-                        String dataTypeLabel = cms.labelUnicode("label.seapop-species-data.category.".concat(dataType.toLowerCase()));
-                        out.println("<th class=\"species-data-head-" + dataType.toLowerCase() + "\"><span>" + dataTypeLabel + "</span></th>");
-                    }
-                    %>
-                    <!--
-                    <th><span>Diett</span></th>
-                    <th><span>Bestand</span></th>
-                    <th><span>Reprod</span></th>
-                    <th><span>Overlevelse</span></th>-->
-                    <th><span><%= cms.labelUnicode("label.seapop-species-data.total") %></span></th>
+                    <th scope="col"><span><%= cms.labelUnicode("label.seapop-species-data.number-of-series.short") %></span></th>
                 </tr>
 
                 <% 
-                out.println(speciesDataEntries.toHtmlTableRows(cms, null, SpeciesDataLinkType.TYPES_ORDER_DEFAULT, excludeTypes));
+                out.println(speciesDataEntries.toHtmlTableRows(cms, type));
                 %>
-            <!--</table>-->
         </div>
