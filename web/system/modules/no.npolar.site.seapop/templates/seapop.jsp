@@ -235,7 +235,7 @@ cms.editable(false);
 <html lang="<%= loc.getLanguage() %>">
 <head>
 <title><%= title %></title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=0.5,user-scalable=yes" />
 <meta property="og:title" content="<%= socialMediaTitle %>" />
 <meta property="og:site_name" content="<%= siteName %>" />
@@ -244,7 +244,6 @@ if (!description.isEmpty()) {
     out.println("<meta name=\"description\" content=\"" + description + "\" />");
     out.println("<meta property=\"og:description\" content=\"" + description + "\" />");
     out.println("<meta name=\"twitter:card\" content=\"summary\" />");
-    out.println("<meta name=\"twitter:site\" content=\"@NorskPolar\" />");
     out.println("<meta name=\"twitter:title\" content=\"" + socialMediaTitle + "\" />");
     out.println("<meta name=\"twitter:description\" content=\"" + CmsStringUtil.trimToSize(description, 180, 10, " ...") + "\" />");
     if (featuredImage != null || cmso.existsResource(featuredImage)) {
@@ -302,7 +301,7 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript" src="<cms:link>/system/modules/no.npolar.site.seapop/resources/js/highslide/highslide-full.js</cms:link>"></script>
 <script type="text/javascript" src="<cms:link>../resources/js/commons.js</cms:link>"></script>
-<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.common.jquery/resources/jquery.hoverintent.min.js</cms:link>"></script>
+<!--<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.common.jquery/resources/jquery.hoverintent.min.js</cms:link>"></script>-->
 <!--<script type="text/javascript" src="<cms:link>../resources/js/nav-off-canvas.js</cms:link>"></script>-->
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
 
@@ -427,7 +426,8 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
     <footer id="footer">
         <div id="footer-content">
             <% 
-            cms.includeAny("/" + loc + "/footer-content.html"); 
+            cms.includeAny("/" + locale + "/footer-content.html");
+            //cms.getContent("/" + "no" + "/footer.html", "body", loc); // won't work ...
             %>
         </div>
     </footer>
@@ -495,17 +495,20 @@ function initUserControls() {
     $('#nav a').blur(function() {
         $(this).parents('li').removeClass('infocus');
     });
-    
     try {
         // use "hover intent" to add usability bonus
-        $('#nav li').hoverIntent({
-            over: mouseinMenuItem
-            ,out: mouseoutMenuItem
-            ,timeout:400
-            ,interval:250
+        $('#nav li').hoverDelay({
+            delayIn: 250,
+            delayOut: 300,
+            handlerIn: function($element) {
+                $element.addClass('infocus');
+            },
+            handlerOut: function($element) {
+                $element.removeClass('infocus');
+            }
         });
     } catch (err) {
-        // No "hover intent"
+        // No hoverDelay function
         $('#nav li').mouseenter(function() {
             $(this).addClass('infocus');
         });
@@ -542,13 +545,6 @@ function initUserControls() {
     layItOut();
 }
 
-function mouseinMenuItem(menuItem) {
-    $(this).addClass('infocus');
-}
-function mouseoutMenuItem(menuItem) {
-    $(this).removeClass('infocus');
-}
-
 function layItOut() {
     var bigScreen = true;
     try {
@@ -561,8 +557,7 @@ function layItOut() {
 
         // Create the large screen submenu: 
         // Clone the current top-level navigation's submenu, add it to the DOM and wrap it in a <nav>
-        //if (emptyOrNonExistingElement('subnavigation')) { // Don't keep adding the submenu again and again ... Du-uh
-        if ($('#subnavigation').length == 0) { // Don't keep adding the submenu again and again ... Du-uh
+        if ($('#subnavigation').length === 0) { // Don't keep adding the submenu again and again ... Du-uh
             var submenu = $('.inpath.subitems > ul').clone(); // Clone it
             submenu.removeAttr('class').removeAttr('style'); // Strip classes and attributes (which may have been modified by togglers in small screen view)
             submenu.children('ul').removeAttr('class').removeAttr('style'); // Do the same for all deeper levels
@@ -594,7 +589,6 @@ function layItOut() {
         $('#searchbox').addClass('not-visible');
     }
 }
-
 function keyFriendly() {
     try { 
         document.getElementById("behave").innerHTML="a:focus, input:focus, button:focus, select:focus { outline:thin dotted; outline:3px solid #1f98f6; }"; 
@@ -605,18 +599,9 @@ function mouseFriendly() {
         document.getElementById("behave").innerHTML="a, a:focus, input:focus, select:focus { outline:none !important; }"; 
     } catch (err) {}
 }
-
 function smallScreenMenuIsVisible() {
     return $('html').hasClass('navigating');
 }
-
-function showSubMenu() {
-}
-
-
-document.getElementsByTagName('a').onfocus = function(e) {
-    this.toggleClass('has-focus');
-};
 </script>
 </body>
 </html>
