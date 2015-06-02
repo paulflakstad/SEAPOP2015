@@ -709,6 +709,9 @@ orange  |  red  |  lightblue  |  green
 }
 /* END new layout pattern test */
 
+#homepage .latest-news .card-v {
+    font-size: 1.4em;
+}
 
 
 

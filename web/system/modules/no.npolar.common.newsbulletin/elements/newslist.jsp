@@ -84,7 +84,7 @@
                 teaser = CmsStringUtil.trimToSize(teaser, 175, "&hellip;");
             } catch (Exception e) {}*/
             
-            if (cardType!= null && (cardType.equals("v") || cardType.equals("h"))) {
+            if (cardType != null && (cardType.equals("v") || cardType.equals("h"))) {
                 html += "<div class=\"span1 layout-box\">";
                     html += "<a class=\"featured-link card-link\" href=\"" + cms.link(fileName) + "\">";
                         html += "<div class=\"card card-" + cardType + "\">";

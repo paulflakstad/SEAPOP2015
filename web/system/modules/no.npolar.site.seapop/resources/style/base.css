@@ -2700,6 +2700,10 @@ th.species-data-head-timing,
     }
 /*}*/
 
+/* Hide byline (this was requested) */
+.byline {
+    display:none;
+}
 
 /* Person profile pages (overrides) */
 .person .media.pull-right.xs {
