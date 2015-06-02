@@ -496,7 +496,7 @@ function initUserControls() {
         $(this).parents('li').removeClass('infocus');
     });
     try {
-        // use "hover intent" to add usability bonus
+        // use "hover delay" to add usability bonus
         $('#nav li').hoverDelay({
             delayIn: 250,
             delayOut: 300,
