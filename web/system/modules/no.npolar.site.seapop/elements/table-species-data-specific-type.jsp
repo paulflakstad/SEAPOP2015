@@ -16,6 +16,32 @@
                 org.opencms.main.OpenCms,
                 org.opencms.file.*"
 %><%
+    
+    
+    // -------------------------------------------------------------------------
+    // Define the order of the locations in the table
+    //
+    List<String> locationsInOrder = Arrays.asList( new String[] {
+        "Spitsbergen",
+        "Bjørnøya",
+        "Hornøya",
+        "Hjelmsøya",
+        "Grindøya",
+        "Jan Mayen",
+        "Anda",
+        "Røst",
+        "Sør-Helgeland",
+        "Sklinna",
+        "Runde",
+        "Hordaland",
+        "Rogaland",
+        "Vest-Agder",
+        "Ytre Oslofjord"
+    });
+    // -------------------------------------------------------------------------
+    
+    
+    
     CmsAgent cms = new CmsAgent(pageContext, request, response);
     CmsObject cmso = cms.getCmsObject();
     Locale locale = cms.getRequestContext().getLocale();
@@ -61,6 +87,6 @@
                 </tr>
 
                 <% 
-                out.println(speciesDataEntries.toHtmlTableRows(cms, type));
+                out.println(speciesDataEntries.toHtmlTableRows(cms, type, SpeciesDataLinkType.TYPES_ORDER_DEFAULT, null, locationsInOrder));
                 %>
         </div>
