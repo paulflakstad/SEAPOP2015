@@ -1,0 +1,49 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/no.npolar.site.seapop/schemas/seapop-species-prenamed-link.xsd"/>
+
+    <xsd:element name="SeapopSpeciesGeneralLinkss" type="OpenCmsSeapopSpeciesGeneralLinkss" />
+
+    <xsd:complexType name="OpenCmsSeapopSpeciesGeneralLinkss">
+        <xsd:sequence>
+            <xsd:element name="SeapopSpeciesGeneralLinks" type="OpenCmsSeapopSpeciesGeneralLinks" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsSeapopSpeciesGeneralLinks">
+        <xsd:sequence>
+            <xsd:element name="Description" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="WinterDistribution" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="MoultingDistribution" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="NestingDistribution" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="PopulationDevelopment" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="BreedingSuccess" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="Survival" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="Diet" type="OpenCmsSeapopSpeciesPreNamedLink" />
+            <xsd:element name="Phenology" type="OpenCmsSeapopSpeciesPreNamedLink" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundles>
+                <xmlbundle name="no.npolar.site.seapop">
+                    <bundle locale="en">
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.Description">Description</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.WinterDistribution">Winter Distribution</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.MoultingDistribution">Moulting Distribution</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.NestingDistribution">Nesting Distribution</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.PopulationDevelopment">Population Development</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.BreedingSuccess">Breeding Success</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.Survival">Survival</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.Diet">Diet</resource>
+                        <resource key="label.OpenCmsSeapopSpeciesGeneralLinks.Phenology">Phenology</resource>
+                    </bundle>
+                </xmlbundle>
+            </resourcebundles>
+        </xsd:appinfo>
+    </xsd:annotation>
+    
+</xsd:schema>
