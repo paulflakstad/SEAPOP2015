@@ -2531,6 +2531,13 @@ aside h4, .column.small h4, /* Rightside headings */
 	position:relative;
 }
 
+/* Species' general links */
+.species-general-links h3 {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 1em;
+}
+
 /* Species data tables */
 .species-data-link-table {
     /*table-layout:fixed;*/
