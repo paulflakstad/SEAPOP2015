@@ -693,7 +693,6 @@ h1 .scientific-name {
 
 /* Page byline */
 .byline {
-    color:#666;
     font-size:75%;
     overflow:auto;
     background-color:#f5f5f5;
@@ -708,7 +707,16 @@ h1 .scientific-name {
 /* "Less important" wrapper */
 .secondary {
     background-color:#f5f5f5;
+}
+
+.byline,
+.secondary,
+.link-description {
     color:#666;
+}
+
+.link-description {
+    font-size:smaller;
 }
 
 /* Page summary / description / intro */
