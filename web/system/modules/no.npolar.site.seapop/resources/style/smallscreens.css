@@ -51,9 +51,10 @@
 
 .media.pull-right,
 .media.pull-left {
-	width:45%;
-	overflow:hidden;
-	clear:right;
+    width:45%;
+    overflow:hidden;
+    clear:right;
+    z-index:2;
 }
 .media.xs {
 	width:20%;
