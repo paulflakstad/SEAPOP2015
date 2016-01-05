@@ -23,8 +23,11 @@
  */
 public String toListItemLink(CmsAgent cms, String uri, String text, String liClass) {
     if (CmsAgent.elementExists(uri)) {
+        boolean ninaLink = uri.contains("//www2.nina.no/");
         return "<li" + (liClass != null ? (" " + liClass) : "") + ">"
-                + "<a href=\"" + cms.link(uri).replaceAll("\\&", "&amp;") + "\">" + text + "</a></li>";
+                + "<a href=\"" + cms.link(uri).replaceAll("\\&", "&amp;") + "\""
+                    + (ninaLink ? " target=\"_blank\"" : "")
+                + ">" + text + "</a></li>";
     }
     return "";
 }
