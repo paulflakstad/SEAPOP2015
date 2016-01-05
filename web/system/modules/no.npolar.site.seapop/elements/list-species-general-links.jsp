@@ -42,6 +42,25 @@ public List addValid(List<String> list, CmsAgent cms, String uri, String text, S
     }
     return list;
 }
+
+/**
+ * Creates a list with an optional heading, if the given list is non-empty.
+ */
+public String toList(List items, String heading) {
+    String s = "";
+    if (!items.isEmpty()) {
+        if (heading != null && !heading.isEmpty()) {
+            s += "<h3>" + heading + "</h3>";
+        }
+        s += "<ul>";
+        Iterator<String> i = items.iterator();
+        while (i.hasNext()) {
+            s += i.next();
+        }
+        s += "</ul>";
+    }
+    return s;
+}
 %><%
 CmsAgent cms = new CmsAgent(pageContext, request, response);
 CmsObject cmso = cms.getCmsObject();
@@ -59,7 +78,7 @@ I_CmsXmlContentContainer filesContainer = cms.contentload(COLLECTOR, FOLDER.conc
 if (!filesContainer.getCollectorResult().isEmpty()) {
     %>
     <div class="paragraph">
-    <ul class="blocklist">
+    <ul class="blocklist species-general-links">
     <%
     while (filesContainer.hasMoreResources()) {
         String filePath = cms.contentshow(filesContainer, "%(opencms.filename)");
@@ -71,24 +90,26 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
         %>
         <li class="toggleable collapsed">
             <h2 class="toggletrigger"><%= title %></h2>
-            <div class="toggletarget">
-                <ul>
+            <div class="toggletarget">                
+                
+                    
         <%
 
             I_CmsXmlContentContainer generalLinks = cms.contentloop(singleFile, "GeneralLinks");
             while (generalLinks.hasMoreResources()) {
                 List<String> listItems = new ArrayList<String>();
 
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Description/URL"), cms.labelUnicode(LABEL_PREFIX.concat("description")), null);
+                String descriptionUri = cms.contentshow(generalLinks, "Description/URL");
+                if (CmsAgent.elementExists(descriptionUri)) {
+                    %>
+                    <h3><a href="<%= descriptionUri.replaceAll("\\&", "&amp;") %>"><%= cms.labelUnicode(LABEL_PREFIX.concat("description")) %></a></h3>
+                    <%
+                }
+                
                 listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "WinterDistribution/URL"), cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution")), null);
                 listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "MoultingDistribution/URL"), cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution")), null);
                 listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "NestingDistribution/URL"), cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution")), null);
-                if (!listItems.isEmpty()) {
-                    Iterator<String> i = listItems.iterator();
-                    while (i.hasNext()) {
-                        out.println(i.next());
-                    }
-                }
+                out.println(toList(listItems, cms.labelUnicode(LABEL_PREFIX.concat("distribution-maps"))));
                 listItems.clear();
 
                 // Done with group, continue to next
@@ -98,26 +119,11 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
                 listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Survival/URL"), cms.labelUnicode(LABEL_PREFIX.concat("survival")), null);
                 listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Diet/URL"), cms.labelUnicode(LABEL_PREFIX.concat("diet")), null);
                 listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Phenology/URL"), cms.labelUnicode(LABEL_PREFIX.concat("phenology")), null);
-                if (!listItems.isEmpty()) {
-                    %>
-                    <li>
-                        <h3><%= cms.labelUnicode(LABEL_PREFIX.concat("time-series-data")) %></h3>
-                        <ul>
-                            <%
-                            Iterator<String> i = listItems.iterator();
-                            while (i.hasNext()) {
-                                out.println(i.next());
-                            }
-                            %>
-                        </ul>
-                    </li>
-                    <%
-                }
+                out.println(toList(listItems, cms.labelUnicode(LABEL_PREFIX.concat("time-series-data"))));
                 listItems.clear();
             }
         }
         %>
-                </ul>
             </div>
         </li>
         <%
