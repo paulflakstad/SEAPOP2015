@@ -455,6 +455,9 @@ try {
 $(document).ready(function() {
     initUserControls();
     
+    // Open all links to the NINA full-screen app in a new tab 
+    $('a[href^="http://www2.nina.no/Seapop/seapophtml/"]').attr('target', '_blank');
+    
     if (bigScreen && Modernizr.cssfilters) {
         // Blurry version of the hero image as background
         $('.article-hero').append( $('.article-hero-content > figure > img').clone() );
