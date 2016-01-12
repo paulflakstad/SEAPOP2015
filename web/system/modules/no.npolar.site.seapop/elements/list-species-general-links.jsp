@@ -21,13 +21,16 @@
 /**
  * Creates a list item that holds a link, if the URI is considered valid.
  */
-public String toListItemLink(CmsAgent cms, String uri, String text, String liClass) {
+public String toListItemLink(CmsAgent cms, String uri, String text, String description, String comment, String liClass) {
     if (CmsAgent.elementExists(uri)) {
         boolean ninaLink = uri.contains("//www2.nina.no/");
         return "<li" + (liClass != null ? (" " + liClass) : "") + ">"
                 + "<a href=\"" + cms.link(uri).replaceAll("\\&", "&amp;") + "\""
                     + (ninaLink ? " target=\"_blank\"" : "")
-                + ">" + text + "</a></li>";
+                + ">" + text + "</a>"
+                + (CmsAgent.elementExists(description) ? "<br/><span class=\"link-description\">".concat(description).concat("</span>") : "")
+                + (CmsAgent.elementExists(comment) ? comment : "")
+                + "</li>";
     }
     return "";
 }
@@ -35,8 +38,8 @@ public String toListItemLink(CmsAgent cms, String uri, String text, String liCla
 /**
  * Adds a link as a list item to the given list, if the URI is considered valid.
  */
-public List addValid(List<String> list, CmsAgent cms, String uri, String text, String liClass) {
-    String li = toListItemLink(cms, uri, text, liClass);
+public List addValid(List<String> list, CmsAgent cms, String uri, String text, String description, String comment, String liClass) {
+    String li = toListItemLink(cms, uri, text, description, comment, liClass);
     if (li != null && !li.isEmpty()) {
         list.add(li);
     }
@@ -72,6 +75,7 @@ final int RESOURCE_TYPE_ID = OpenCms.getResourceManager().getResourceType("seapo
 final String COLLECTOR = "allInFolderPriorityTitleDesc";
 final String FOLDER = "/no/artsdata/";
 final String LABEL_PREFIX = "label.seapop-general.";
+final String LABEL_COMMENT_POSTFIX = ".help";
 
 I_CmsXmlContentContainer filesContainer = cms.contentload(COLLECTOR, FOLDER.concat("|").concat(Integer.toString(RESOURCE_TYPE_ID)), false);
 
@@ -97,8 +101,7 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
 
             I_CmsXmlContentContainer generalLinks = cms.contentloop(singleFile, "GeneralLinks");
             while (generalLinks.hasMoreResources()) {
-                List<String> listItems = new ArrayList<String>();
-
+                
                 String descriptionUri = cms.contentshow(generalLinks, "Description/URL");
                 if (CmsAgent.elementExists(descriptionUri)) {
                     %>
@@ -106,19 +109,65 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
                     <%
                 }
                 
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "WinterDistribution/URL"), cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution")), null);
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "MoultingDistribution/URL"), cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution")), null);
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "NestingDistribution/URL"), cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution")), null);
+                List<String> listItems = new ArrayList<String>();
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "WinterDistribution/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "WinterDistribution/Comment"), 
+                        null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "MoultingDistribution/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "MoultingDistribution/Comment"), 
+                        null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "NestingDistribution/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "NestingDistribution/Comment"), 
+                        null);
                 out.println(toList(listItems, cms.labelUnicode(LABEL_PREFIX.concat("distribution-maps"))));
                 listItems.clear();
 
-                // Done with group, continue to next
 
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "PopulationDevelopment/URL"), cms.labelUnicode(LABEL_PREFIX.concat("population-development")), null);
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "BreedingSuccess/URL"), cms.labelUnicode(LABEL_PREFIX.concat("breeding-success")), null);
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Survival/URL"), cms.labelUnicode(LABEL_PREFIX.concat("survival")), null);
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Diet/URL"), cms.labelUnicode(LABEL_PREFIX.concat("diet")), null);
-                listItems = addValid(listItems, cms, cms.contentshow(generalLinks, "Phenology/URL"), cms.labelUnicode(LABEL_PREFIX.concat("phenology")), null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "PopulationDevelopment/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("population-development")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("population-development").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "PopulationDevelopment/Comment"), null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "BreedingSuccess/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("breeding-success")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("breeding-success").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "BreedingSuccess/Comment"), null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "Survival/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("survival")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("survival").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "Survival/Comment"), 
+                        null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "Diet/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("diet")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("diet").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "Diet/Comment"), 
+                        null);
+                listItems = addValid(listItems, 
+                        cms, 
+                        cms.contentshow(generalLinks, "Phenology/URL"), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("phenology")), 
+                        cms.labelUnicode(LABEL_PREFIX.concat("phenology").concat(LABEL_COMMENT_POSTFIX)), 
+                        cms.contentshow(generalLinks, "Phenology/Comment"), 
+                        null);
                 out.println(toList(listItems, cms.labelUnicode(LABEL_PREFIX.concat("time-series-data"))));
                 listItems.clear();
             }
