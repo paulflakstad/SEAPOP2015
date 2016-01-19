@@ -455,8 +455,10 @@ try {
 $(document).ready(function() {
     initUserControls();
     
-    // Open all links to the NINA full-screen app in a new tab 
+    // Open all links to the NINA full-screen app in new tabs
     $('a[href^="http://www2.nina.no/Seapop/seapophtml/"]').attr('target', '_blank');
+    // Open all PDF links in new tabs
+    $('a[href$=".pdf"], a[href*=".pdf?"]').attr('target', '_blank');
     
     if (bigScreen && Modernizr.cssfilters) {
         // Blurry version of the hero image as background
