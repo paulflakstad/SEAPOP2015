@@ -82,7 +82,8 @@ I_CmsXmlContentContainer filesContainer = cms.contentload(COLLECTOR, FOLDER.conc
 if (!filesContainer.getCollectorResult().isEmpty()) {
     %>
     <div class="paragraph">
-    <ul class="blocklist species-general-links">
+    <!--<ul class="blocklist species-general-links">-->
+    <div class="blocklist species-general-links toggleable collapsed">
     <%
     while (filesContainer.hasMoreResources()) {
         String filePath = cms.contentshow(filesContainer, "%(opencms.filename)");
@@ -90,11 +91,13 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
 
         while (singleFile.hasMoreResources()) {
             String title = cms.contentshow(singleFile, "SpeciesName");
+            String targetId = title.toLowerCase();
 
         %>
-        <li class="toggleable collapsed">
-            <h2 class="toggletrigger"><%= title %></h2>
-            <div class="toggletarget">                
+        <!--<li class="toggleable collapsed">-->
+            <!--<h2 class="toggletrigger" aria-controls="<%= targetId %>"><a href="#<%= targetId %>"><%= title %></a></h2>-->
+            <a class="toggletrigger" aria-controls="<%= targetId %>" href="#<%= targetId %>"><%= title %></a>
+            <div class="toggletarget" id="<%= targetId %>">
                 
                     
         <%
@@ -174,11 +177,12 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
         }
         %>
             </div>
-        </li>
+        <!--</li>-->
         <%
     }
     %>
-    </ul>
+    <!--</ul>-->
+    </div>
     </div>
     <%
 }
