@@ -22,18 +22,18 @@ Locale locale = cms.getRequestContext().getLocale();
 String loc = locale.toString();
 
 // Annual brochure: URLs to PDF and image files
-final String URL_ANNUAL_BROCHURE_PDF = cms.link("/no/files/pdf/SEAPOP-arsbrosjyre-2014.pdf");
+final String URL_ANNUAL_BROCHURE_PDF = cms.link("/no/filer/pdf/arsbrosjyrer/SEAPOP-arsbrosjyre-2014.pdf");
 final String URL_ANNUAL_BROCHURE_IMG = cms.link("/images/news-images/seapop-arsbrosjyre-2014_forside.jpg");
 final String URL_ANNUAL_BROCHURE_TITLE = loc.equalsIgnoreCase("no") ? "SEAPOP årsbrosjyre 2014" : "SEAPOP 2014 annual brochure";
 
 // Key document: URLs to PDF and image files
-final String URL_KEY_DOC_PDF = cms.link("/no/files/pdf/SEAPOP-Nokkeldokument-2015-web.pdf");
+final String URL_KEY_DOC_PDF = cms.link("/no/filer/pdf/SEAPOP-Nokkeldokument-2015-web.pdf");
 final String URL_KEY_DOC_IMG = cms.link("/images/news-images/SEAPOP-Nokkeldokument-2015_forside.jpg");
-final String URL_KEY_DOC_TITLE = loc.equalsIgnoreCase("no") ? "SEAPOP nøkkeldokument 2015" : "SEAPOP key document 2015";
+final String URL_KEY_DOC_TITLE = loc.equalsIgnoreCase("no") ? "SEAPOP Nøkkeldokument 2005-2014" : "SEAPOP key document 2005-2014";
 
 // Publications: Folder / title
 final String PUBLICATIONS_FOLDER = loc.equalsIgnoreCase("no") ? "/no/publikasjoner/" : "/en/publications/";
-final String PUBLICATIONS_TITLE = cms.property("Title", PUBLICATIONS_FOLDER, loc.equalsIgnoreCase("no") ? "Publikasjoner" : "Publications");
+final String PUBLICATIONS_TITLE = loc.equalsIgnoreCase("no") ? "Siste publikasjoner" : "Latest publications";
 final String PUBLICATIONS_LINK_TEXT = loc.equalsIgnoreCase("no") ? "Flere publikasjoner" : "More publications";
 
 
@@ -46,7 +46,6 @@ final String PUBLICATIONS_LINK_TEXT = loc.equalsIgnoreCase("no") ? "Flere publik
         %>
     </div>
     <div class="layout-box">
-        <h2 class="portal-box-heading"><%= PUBLICATIONS_TITLE %></h2>
         
 	<a href="<%= URL_ANNUAL_BROCHURE_PDF %>" hreflang="no" class="card-link featured-link" target="_blank" 
            onclick="ga('send', 'event', 'Downloads', 'Start download', '<%= URL_ANNUAL_BROCHURE_TITLE %> (<%= locale.getDisplayLanguage() %>)');">
@@ -81,11 +80,11 @@ final String PUBLICATIONS_LINK_TEXT = loc.equalsIgnoreCase("no") ? "Flere publik
                     <%
                     // Norwegian
                     if (loc.equalsIgnoreCase("no")) {
-                        out.println("<p>Sammenfatter viktige resultater og aktiviter fra 2014.</p>");
+                        out.println("<p>Oppsummerer SEAPOPs resultater og belyser endringer i sjøfuglbestandene.</p>");
                     }
                     // English
                     else if (loc.equalsIgnoreCase("en")) {
-                        out.println("<p>A summary of important activities and results from 2014.</p>");
+                        out.println("<p>A summary of the results of the SEAPOP programme and of the changes in the seabird populations.</p>");
                     }
                     %>
                 </div>
@@ -94,6 +93,7 @@ final String PUBLICATIONS_LINK_TEXT = loc.equalsIgnoreCase("no") ? "Flere publik
 		
     </div>
     <div class="layout-box">
+        <h2 class="portal-box-heading"><%= PUBLICATIONS_TITLE %></h2>
         <%
         
         // Define settings for the "latest publications" list
