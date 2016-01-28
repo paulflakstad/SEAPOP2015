@@ -242,25 +242,39 @@ while (container.hasMoreContent()) {
     //out.println("<!-- PARAGRAPH_HANDLER: inside container... -->");
     // We will only be processing the "Paragraph" element
     paragraphs = cms.contentloop(container, paragraphElementName);
+    int paragraphCounter = 0;
     // Process content (paragraphs)
     while (paragraphs.hasMoreContent()) {
+        paragraphCounter++;
+        String paragraphId = "content-section-" + paragraphCounter;
         // Clear the image lists
         imagesBefore.clear();
         imagesFullWidthAfter.clear();
         imagesFullWidthBefore.clear();
         
-        out.println("<div class=\"paragraph\">");
+        
+        boolean accordion = Boolean.valueOf(cms.contentshow(paragraphs, "Accordion"));
+        
+        out.println("<div class=\"paragraph" + (accordion ? " toggleable collapsed" : "") + "\">");
         // Get the paragraph title and text
         title   = cms.contentshow(paragraphs, "Title").replaceAll(" & ", " &amp; ");
         text    = cms.contentshow(paragraphs, "Text");
 
         // Print the paragraph title
         if (CmsAgent.elementExists(title)) {
+            String titleRes = title;
             try {
-                out.println("<h2>" + cnr.resolve(title) + "</h2>");
+                titleRes = cnr.resolve(title);
             } catch (Exception e) {
                 out.println("<!--\nERROR trying to resolve content notation for the title '" + title + "'\n-->");
-                out.println("<h2>" + title + "</h2>");
+            }
+            if (!accordion) {
+                out.println("<h2>" + titleRes + "</h2>");
+            } else {
+                out.println("<a class=\"toggletrigger\" aria-controls=\"" + paragraphId + "\" href=\"#" + paragraphId + "\" style=\"font-size:large; padding:0.2em;\">"
+                        + "<h2 style=\"display:inline; font-size:1em;\">" + titleRes + "</h2>"
+                        + "</a>");
+                out.println("<div id=\"" + paragraphId + "\" class=\"toggletarget\">"); // Extra accordion show/hide container
             }
         }
 
@@ -632,6 +646,10 @@ while (container.hasMoreContent()) {
             out.println("<!-- Oh noes, the extension crashed it! Message was: " + e3.getMessage() + " -->");
         }
         */
+        
+        if (accordion) {
+            out.println("</div>"); // Extra accordion div
+        }
         
         out.println("</div><!-- .paragraph -->");
         

@@ -21,9 +21,9 @@
             <xsd:element name="Text" type="OpenCmsHtml" />
             <xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="39" />
             <xsd:element name="Video" type="OpenCmsVideoContent" minOccurs="0" maxOccurs="10" />
-            <!--<xsd:element name="FlashContent" type="OpenCmsFlashContent" minOccurs="0" maxOccurs="1" />-->
             <xsd:element name="TextBox" type="OpenCmsTextBox" minOccurs="0" maxOccurs="1" />
             <xsd:element name="EmbeddedGallery" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="39" />
+            <xsd:element name="Accordion" type="OpenCmsBoolean" default="false" />
             <xsd:element name="Extension" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -36,8 +36,8 @@
                 <layout element="Text" widget="HtmlWidget" configuration="formatselect,link,anchor,source,imagegallery,tablegallery" />
             </layouts>
             <searchsettings>
-            	<!--<searchsetting element="FlashContent" searchcontent="false" />-->
                 <searchsetting element="EmbeddedGallery" searchcontent="false" />
+                <searchsetting element="Accordion" searchcontent="false" />
                 <searchsetting element="Extension" searchcontent="false" />
             </searchsettings>
         </xsd:appinfo>
