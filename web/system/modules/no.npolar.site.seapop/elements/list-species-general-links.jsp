@@ -117,21 +117,21 @@ if (!filesContainer.getCollectorResult().isEmpty()) {
                         cms, 
                         cms.contentshow(generalLinks, "WinterDistribution/URL"), 
                         cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution")), 
-                        cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution").concat(LABEL_COMMENT_POSTFIX)), 
+                        null,//cms.labelUnicode(LABEL_PREFIX.concat("winter-distribution").concat(LABEL_COMMENT_POSTFIX)), 
                         cms.contentshow(generalLinks, "WinterDistribution/Comment"), 
                         null);
                 listItems = addValid(listItems, 
                         cms, 
                         cms.contentshow(generalLinks, "MoultingDistribution/URL"), 
                         cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution")), 
-                        cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution").concat(LABEL_COMMENT_POSTFIX)), 
+                        null,//cms.labelUnicode(LABEL_PREFIX.concat("moulting-distribution").concat(LABEL_COMMENT_POSTFIX)), 
                         cms.contentshow(generalLinks, "MoultingDistribution/Comment"), 
                         null);
                 listItems = addValid(listItems, 
                         cms, 
                         cms.contentshow(generalLinks, "NestingDistribution/URL"), 
                         cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution")), 
-                        cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution").concat(LABEL_COMMENT_POSTFIX)), 
+                        null,//cms.labelUnicode(LABEL_PREFIX.concat("nesting-distribution").concat(LABEL_COMMENT_POSTFIX)), 
                         cms.contentshow(generalLinks, "NestingDistribution/Comment"), 
                         null);
                 out.println(toList(listItems, cms.labelUnicode(LABEL_PREFIX.concat("distribution-maps"))));
