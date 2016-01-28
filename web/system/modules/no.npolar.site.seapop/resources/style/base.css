@@ -266,6 +266,7 @@ h1,
     margin-top:0;
     padding-bottom:0.5em;
     padding-top:1em;
+    overflow:auto;
     /*text-shadow:1px 1px 1px #ddd;*/
 }
 
@@ -491,6 +492,35 @@ ul.line-items li {
 .toggletrigger:hover .icon-up-open-big,
 .toggletrigger:hover .icon-down-open-big {
 	background-color:#fff;
+}
+.toggletarget,
+.toggletarget.toggletarget--closed:target {
+    max-height:0;
+    opacity:0.8;
+    visibility:hidden;
+    overflow:hidden;
+    padding:0 1em;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transition: padding 0.25s ease, max-height 0.4s ease-out, opacity 0.4s ease, visibility 0.4s ease;
+    -moz-transition: padding 0.25s ease, max-height 0.4s ease-out, opacity 0.4s ease, visibility 0.4s ease;
+    -o-transition: padding 0.25s ease, max-height 0.4s ease-out, opacity 0.4s ease, visibility 0.4s ease;
+    transition: padding 0.25s ease, max-height 0.4s ease-out, opacity 0.4s ease, visibility 0.4s ease; /* transition open->closed */
+}
+.toggletarget:target,
+.toggletarget.toggletarget--open {
+    max-height:9999px;
+    opacity:1;
+    visibility:visible;
+    overflow:auto;
+    padding:1em;
+    margin-bottom:0.2rem;
+    -webkit-transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease;
+    -moz-transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease;
+    -o-transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease;
+    transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease; /* transition closed->open */
 }
 
 /* Accordion inside "parameter" wrapper (MOSJ-specific) */
@@ -742,6 +772,7 @@ h1 .scientific-name {
 .paragraph {
     overflow:auto;
     display:table; /* Needed in order to successfully re-arrange order of child elements */
+    table-layout:fixed; /* Prevent child elements from expanding the width (beyond 100%) */
     margin-top:1em; 
     width:100%;
 }
@@ -915,6 +946,7 @@ h1 .scientific-name {
     background-color:#384d6a; /* = same as footer */
     overflow:auto;
     border:none;
+    color:#eee;
 }
 #nav_breadcrumb {
     /*list-style-image:none;
@@ -1106,7 +1138,8 @@ a.breadcrumb*/ {
     background-image: url("/system/modules/no.npolar.common.highslide/resources/js/highslide/graphics/controlbar-black.gif");
 }
 .imagetext,
-.caption {
+.caption,
+.highslide-caption.caption {
     display:block;
     margin:0;
     font-size:1em;
@@ -1363,22 +1396,159 @@ h4.news-title {
 }
 
 /* Site search (global) */
-#searchbox {
-    /*text-align:left;*/
+#search-global form {
+    position:relative;
+}
+#search-global {
     position:relative;
     clear:both;
-    /*display:inline-block;*/
-    /*float:right;*/
     width:100%;
-    /*max-height:3em;*/
-    /*margin:1.2rem 0 1.2rem 0;*/
+    opacity:0;
+    -moz-transition:max-height 0.25s ease, opacity 0.3s ease 0.2s, padding 0.25s ease;
+    -webkit-transition:max-height 0.25s ease, opacity 0.3s ease 0.2s, padding 0.25s ease;
+    -o-transition:max-height 0.25s ease, opacity 0.3s ease 0.2s, padding 0.25s ease;
+    transition:max-height 0.25s ease, opacity 0.3s ease 0.2s, padding 0.25s ease;
+    visibility:hidden;
+    
+    background-color:inherit;
+    max-height:0;
+    /*padding:1.2em 0;*/
+    
+    padding:0;
+    max-width:100%;
+    overflow:hidden;
+}
+#search-global:target,
+.search-open #search-global {
+    max-height:6em;
+    opacity:1;
+    padding:1em;
+    visibility:visible;
+}
+#search-global.not-visible {
+    max-height:0;
+    padding:0;
+    margin:0;
+    opacity:0;
+    visibility:hidden;
+}
+#search-global input[type="search"], 
+#search-global .query-input {
+    background-color:#fafafa;
+}
+#search-global input[type="search"]:focus, 
+#search-global .query-input:focus {
+    background-color:#fff;
+    border:none;
+    box-shadow:0 0 5px rgba(0,150,255,1);
+    box-shadow:0 0 0.5em rgba(56,77,106,0.5); /* #384d6a */
+    color:#000;
+    outline:none;
+} 
+#search-global input[type="button"], 
+#search-global .search-button {
+    background-color:#3a68a6;
+    color:#eee;
+}
+
+
+.searchbox {
+  position:relative;
+  width:40em;
+  max-width:96%;
+  vertical-align:middle;
+}
+.searchbox input[type="search"]::-moz-placeholder,
+.searchbox .query-input::-moz-placeholder {
+  color:#666;
+  opacity:1;
+}
+.searchbox input[type="search"]:-moz-placeholder,
+.searchbox .query-input:-moz-placeholder {
+  color:#666;
+  opacity:1;
+}
+.searchbox input[type="search"]::-webkit-input-placeholder,
+.searchbox .query-input::-webkit-input-placeholder {
+  color:#666;
+  opacity:1;
+}
+.searchbox input[type="search"]:-ms-input-placeholder,
+.searchbox .query-input:-ms-input-placeholder {
+  color:#666;
+  opacity:1;
+}
+.searchbox input[type="search"],
+.searchbox .query-input,
+.searchbox input[type="button"],
+.searchbox .search-button {
+  border:none;
+  margin:0;
+  border-radius:5px;
+  background-color:#fff;
+  background-color:rgba(255,255,255,0.9);
+  box-sizing:border-box;
+  padding:0 0.5em;
+  font-size:1.4em;
+  height:3em;
+  color:#333;
+  -webkit-appearance:none;
+}
+.searchbox input[type="search"],
+.searchbox .query-input {
+  width:100%;
+  padding-right:4em;
+}
+.searchbox input[type="button"],
+.searchbox .search-button {
+  color:#eee;
+  margin-left:-0.5em;
+  border-top-left-radius:0;
+  border-bottom-left-radius:0;
+  /*background-color:rgba(0,0,0,0.2);*/
+  background-color:#3a68a6;
+  /*background-color:rgba(140, 0, 0, 0.7); */
+  -webkit-transition:background-color .3s ease;
+  -moz-transition:background-color .3s ease;
+  transition:background-color .3s ease;
+  position:absolute;
+  right:0;
+  top:0;
+}
+
+.searchbox input[type="search"]:focus,
+.searchbox .query-input:focus {
+  box-shadow:0 0 5em #fff;
+  background-color:#fff;
+  color:#000;
+  border:none;
+  outline:none;
+}
+.searchbox input[type="search"]:focus + input[type="button"],
+.searchbox .search-button {
+  background-color:#cfe0ff;
+  color:#3a68a6;
+}
+.searchbox input[type="button"]:hover,
+.searchbox input[type="button"]:focus,
+.searchbox .search-button:hover, 
+.searchbox .search-button:focus {
+  background-color:#384D6A;
+  color:#fff;
+  cursor:pointer;
+}
+
+/*
+#searchbox {
+    position:relative;
+    clear:both;
+    width:100%;
     opacity:1;
     -moz-transition:max-height 300ms ease;
     -webkit-transition:max-height 300ms ease;
     transition:max-height 300ms ease;
     visibility:visible;
     
-    /*background-color:#333;*/
     max-height:6em;
     padding:1.2em 0;
 }
@@ -1405,7 +1575,7 @@ h4.news-title {
 #searchbox input[type="search"] {
     background-color:#fff;
     border:1px solid #ccc;
-    display:block;/* IE7 needs this */
+    display:block;
     margin:0;
     padding:0.2em 2.1em 0.2em 0.2em;
     font-size:1.2em;
@@ -1428,7 +1598,6 @@ h4.news-title {
     height: 1.95em;
     position: absolute;
     right: 5%;
-    /*top: 0.4em;*/
     top:0;
     width: 1.8em;
     
@@ -1438,7 +1607,7 @@ h4.news-title {
 #searchbox button[type="submit"]:hover {
     cursor:pointer;
 }
-
+*/
 
 
 /* Services and misc. (large icons on portal pages) */
@@ -1490,11 +1659,11 @@ h4.news-title {
 .smallscr-only,
 #nav_sticky,
 #mob_nav_quicklinks {
-    display:block;
+    display:block !important;
 }
 .bigscr-only,
 #nav_quicklinks {
-    display:none;
+    display:none !important;
 }
 
 
@@ -1529,6 +1698,7 @@ h4.news-title {
 .main-content {
     width:100%;
     padding-bottom:1em;
+    min-height:43em;
 }
 aside h4 {
     font-family:"Helvetica Neue",Arial,"Liberation Sans",FreeSans,sans-serif;	
@@ -1847,24 +2017,28 @@ nav .pageNumWrap {
 /* General (& primary) call-to-action links */
 /*a*/.cta {
     display:inline-block;	
-    background-color:#f38f01;
+    background-color:#3a68a6;
     transition:background-color 0.3s;
     color:#fff;
     text-decoration:none;
     text-align:center;
     line-height:1.3em;
     font-size:1.5em;
-    padding:0.2em 1%;
-    margin:2px;
+    padding:0.75em;
+    margin:1em auto;
     border-radius:5px;
-    border:1px solid #999;
+    /*border:1px solid #999;*/
     box-shadow:0 0 1px #aaa;
+    box-shadow:0 0 0.1em rgba(0,0,0,0.5);
+    /*text-shadow:1px 1px 1px rgba(0,0,0,0.5);*/
+    width:auto;
+    max-width:20em;
 }
 /*a*/.cta:hover {
     cursor:pointer;
-    box-shadow:0 0 3px #333;
-    border-color:#666;
-    background-color:#ffa200;
+    box-shadow:none;
+    /*border-color:#666;*/
+    background-color:#284e81;
     color:#fff;
 }
 /* Alternative (secondary) call-to-action links */
@@ -1907,6 +2081,7 @@ nav.pagination a {
     border-radius:0;
     border:none;
     box-shadow:0 0 1px rgba(0,0,0,0.4);
+    box-shadow:0 0 0.15em rgba(0,0,0,0.5);
 }
 /*a*/.cta.more:hover,
 /*a*/.cta.more:focus,
@@ -1916,6 +2091,7 @@ nav.pagination a:focus {
     background-color:#f5f5f5;
     background-position:0.6em center;	
     box-shadow:0 0 1em rgba(0,0,0,0.8);
+    box-shadow:0 0 1px rgba(0,0,0,0.5);
     border:none;
 }
 
@@ -2449,6 +2625,7 @@ aside h4, .column.small h4, /* Rightside headings */
    float:left;
    display:block;
    width:100%;
+   max-width:100%;
    margin:1em 0;
    clear:both;
 }
@@ -2540,6 +2717,10 @@ aside h4, .column.small h4, /* Rightside headings */
 }
 
 /* Species' general links */
+.species-general-links .toggletrigger {
+    font-size: large;
+    padding: 0.2em;
+}
 .species-general-links h3 {
     font-size: 1em;
     font-weight: bold;

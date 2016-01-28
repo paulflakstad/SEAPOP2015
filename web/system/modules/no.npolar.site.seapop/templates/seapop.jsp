@@ -43,21 +43,21 @@ if (!loggedInUser && cms.getRequest().isSecure()) {
     CmsRequestUtil.redirectPermanently(cms, redirAbsPath);
 }
 
-Locale loc                  = cms.getRequestContext().getLocale();
-String locale               = loc.toString();
+Locale locale               = cms.getRequestContext().getLocale();
+String loc                  = locale.toString();
 String description          = CmsStringUtil.escapeHtml(CmsHtmlExtractor.extractText(cms.property("Description", requestFileUri, ""), "utf-8"));
 String title                = cms.property("Title", requestFileUri, "");
 String titleAddOn           = cms.property("Title.addon", "search", "");
-String feedUri              = cms.property("rss", requestFileUri, "");
+//String feedUri              = cms.property("rss", requestFileUri, "");
 boolean portal              = Boolean.valueOf(cms.property("portalpage", requestFileUri, "false")).booleanValue();
 String canonical            = null;
-String featuredImage        = null;
+String featuredImage        = cmso.readPropertyObject(requestFileUri, "image.thumb", false).getValue(null);
 String includeFilePrefix    = "";
 String fs                   = null; // font size
 HttpSession sess            = request.getSession();
 String siteName             = cms.property("sitename", "search", "SEAPOP");
 //boolean loggedInUser        = OpenCms.getRoleManager().hasRole(cms.getCmsObject(), CmsRole.WORKPLACE_USER);
-boolean pinnedNav           = false; 
+//boolean pinnedNav           = false; 
 boolean homePage            = false;
 
 // Enable session-stored "hover box" resolver
@@ -102,7 +102,7 @@ if (canonical == null && CmsRequestUtil.getRequestLink(requestFileUri).endsWith(
         Iterator iKeys = keys.iterator();
         while (iKeys.hasNext()) {
             String key = (String)iKeys.next();
-            if (key.startsWith("__")) // This is an internal OpenCms parameter or a font-size parameter ...
+            if (key.startsWith("__")) // This is an internal OpenCms parameter ...
                 iKeys.remove(); // ... so go ahead and remove it.
         }
         if (!requestParams.isEmpty())
@@ -111,8 +111,8 @@ if (canonical == null && CmsRequestUtil.getRequestLink(requestFileUri).endsWith(
 }
 
 if (request.getParameter("__locale") != null) {
-    loc = new Locale(request.getParameter("__locale"));
-    cms.getRequestContext().setLocale(loc);
+    locale = new Locale(request.getParameter("__locale"));
+    cms.getRequestContext().setLocale(locale);
 }
 if (request.getParameter("includeFilePrefix") != null) {
     includeFilePrefix = request.getParameter("includeFilePrefix");
@@ -161,23 +161,6 @@ if (request.getAttribute("title") != null) {
     
 }
 
-
-// Handle case:
-// - the current request URI is a resource of type "person" AND
-// - the resource has a title on the format "lastname, firstname"
-try {
-    if (requestFileTypeId == OpenCms.getResourceManager().getResourceType("person").getTypeId()) {
-        if (title != null && !title.isEmpty() && title.indexOf(",") > -1) {
-            String[] titleParts = title.split(","); // [Flakstad][ Paul-Inge]
-            if (titleParts.length == 2) {
-                title = titleParts[1].trim() + " " + titleParts[0].trim();
-            }
-        }
-    }
-} catch (org.opencms.loader.CmsLoaderException unknownResTypeException) {
-    // Resource type "person" not installed
-}
-
 // Handle case: 
 // - the current request URI points to a folder
 // - the folder has no title
@@ -211,32 +194,36 @@ title = CmsHtmlExtractor.extractText(title, "utf-8");
 // Done with the title. Now create a version of the title specifically targeted at social media (facebook, twitter etc.)
 String socialMediaTitle = title.endsWith((" - ").concat(siteName)) ? title.replace((" - ").concat(siteName), "") : title;
 // Featured image set? (Also for social media.)
-featuredImage = cmso.readPropertyObject(requestFileUri, "image.thumb", false).getValue(null);
+//featuredImage = cmso.readPropertyObject(requestFileUri, "image.thumb", false).getValue(null);
 
 final String NAV_MAIN_URI       = "/menu.html";
-//final String MENU_TOP_URL       = includeFilePrefix + "/header-menu.html";
-//final String QUICKLINKS_MENU_URI= "/menu-quicklinks-isblink.html";
-//final String LANGUAGE_SWITCH    = "/system/modules/no.npolar.common.lang/elements/sibling-switch.jsp";
-final String HOME_URI           = cms.link("/" + locale + "/");
-final String SERP_URI		= cms.link("/" + locale + "/" + (locale.equalsIgnoreCase("no") ? "sok" : "search") + ".html");
-final String SKIP_TO_CONTENT    = locale.equalsIgnoreCase("no") ? "Hopp til innholdet" : "Skip to content";
+final String LANGUAGE_SWITCH    = "/system/modules/no.npolar.common.lang/elements/sibling-switch.jsp";
+final String HOME_URI           = cms.link("/" + loc + "/");
+final String SERP_URI           = cms.link("/" + loc + "/" + (loc.equalsIgnoreCase("no") ? "sok" : "search") + ".html");
+final String SKIP_TO_CONTENT    = loc.equalsIgnoreCase("no") ? "Hopp til innholdet" : "Skip to content";
 final boolean EDITABLE_MENU     = true;
 
 String menuTemplate = null;
 HashMap params = null;
-String quickLinksTemplate = null;
-HashMap quickLinksParams = null;
+//String quickLinksTemplate = null;
+//HashMap quickLinksParams = null;
 
 //String menuFile = cms.property("menu-file", "search", "");
 
 cms.editable(false);
 
 %><cms:template element="header"><!DOCTYPE html>
-<html lang="<%= loc.getLanguage() %>">
+<html lang="<%= locale.getLanguage() %>">
 <head>
 <title><%= title %></title>
-<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=0.5,user-scalable=yes" />
+<% 
+// Print all alternate languages (including current language) for this page
+cms.include("/system/modules/no.npolar.common.lang/elements/alternate-languages.jsp"); 
+if (canonical != null) 
+    out.println("<link rel=\"canonical\" href=\"" + canonical + "\" />");
+%>
 <meta property="og:title" content="<%= socialMediaTitle %>" />
 <meta property="og:site_name" content="<%= siteName %>" />
 <%
@@ -252,8 +239,6 @@ if (!description.isEmpty()) {
     }
 }
 if (canonical != null) {
-    out.println("<!-- This page may exist at other URLs, but this is the true URL: -->");
-    out.println("<link rel=\"canonical\" href=\"" + canonical + "\" />");
     out.println("<meta property=\"og:url\" content=\"" + OpenCms.getLinkManager().getOnlineLink(cmso, canonical) + "\" />");
 }
 %>
@@ -287,19 +272,24 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
 <!--<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/nav-off-canvas.css</cms:link>" />-->
 <!--<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/navigation.css</cms:link>" />-->
 <link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/print.css</cms:link>" media="print" />
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/js/highslide/highslide.css</cms:link>" />
-<link rel="stylesheet" type="text/css" href="<cms:link>/system/modules/no.npolar.common.jquery/resources/qtip2/2.1.1/jquery.qtip.min.css</cms:link>" />
+<!--<link rel="stylesheet" type="text/css" href="<cms:link>../resources/js/highslide/highslide.css</cms:link>" />-->
+<!--<link rel="stylesheet" type="text/css" href="<cms:link>/system/modules/no.npolar.common.jquery/resources/qtip2/2.1.1/jquery.qtip.min.css</cms:link>" />-->
 
 <!--[if lte IE 8]>
 <script type="text/javascript" src="<cms:link>/system/modules/no.npolar.util/resources/js/html5.js</cms:link>"></script>
-<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.util/resources/js/rem.min.js</cms:link>"></script>
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/non-responsive.css</cms:link>" />
+<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.util/resources/js/XXXXXrem.min.js</cms:link>"></script>
+<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/non-responsive-dynamic.css</cms:link>" />
 <link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/ie8.css</cms:link>" />
 <![endif]-->
 
 <script type="text/javascript" src="<cms:link>../resources/js/modernizr.js</cms:link>"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.site.seapop/resources/js/highslide/highslide-full.js</cms:link>"></script>
+<!--[if lt IE 9]>
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<![endif]-->
+<!--[if gte IE 9]><!-->
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!--<![endif]-->
+<!--<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.site.seapop/resources/js/highslide/highslide-full.js</cms:link>"></script>-->
 <script type="text/javascript" src="<cms:link>../resources/js/commons.js</cms:link>"></script>
 <!--<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.common.jquery/resources/jquery.hoverintent.min.js</cms:link>"></script>-->
 <!--<script type="text/javascript" src="<cms:link>../resources/js/nav-off-canvas.js</cms:link>"></script>-->
@@ -312,18 +302,6 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
 </style>
 </head>
 <body id="<%= homePage ? "homepage" : "sitepage" %>">
-    <%
-    // Google Analytics tracking code - output only for users who are not logged in
-    if (!loggedInUser) { %>
-    <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-770196-14', 'auto');
-    ga('send', 'pageview');
-    </script>
-    <%}%>
     <div id="wrapwrap"><div id="wrap">
     <a id="skipnav" tabindex="1" href="#contentstart"><%= SKIP_TO_CONTENT %></a>
     <div id="jsbox"></div>
@@ -340,8 +318,11 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
 
                     <!-- navigation + search togglers (small screen) -->
                     <a id="toggle-nav" class="nav-toggler" tabindex="6" href="#nav"><span><span></span></span></a>
-                    <a id="toggle-search" class="smallscr-only" tabindex="3" href="javascript:void(0);"><i class="icon-search"></i></a>
-
+                    <a id="toggle-search" class="smallscr-only" tabindex="3" href="#search-global"><i class="icon-search"></i></a>
+                    <%
+                    try { cms.include(LANGUAGE_SWITCH); } catch (Exception e) { out.println("\n<!-- error including language switch: " + e.getMessage() + "\n-->"); }
+                    %>
+                    <!--
                     <div id="searchbox">
                         <form method="get" action="<%= SERP_URI %>">
                             <label for="query" class="hidden">Søk på nettstedet</label>
@@ -349,14 +330,22 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
                             <button title="Søk" type="submit" class="submit" value="" tabindex="5"><i class="icon-search"></i></button>
                         </form>
                     </div>
-
+                    -->
+                    <!-- new version -->
+                    <div id="search-global" class="searchbox global-site-search">
+                        <form method="get" action="<%= SERP_URI %>">
+                            <label for="query" class="hidden"><%= cms.labelUnicode("label.seapop.global.search") %></label>
+                            <input type="search" class="query query-input" name="query" id="query" placeholder="<%= cms.labelUnicode("label.seapop.global.search.placeholder") %>" />
+                            <button class="search-button" title="<%= cms.labelUnicode("label.seapop.global.search.submit") %>" onclick="submit()"><i class="icon-search"></i></button>
+                        </form>
+                    </div>
+                    <!-- end new version -->
                 </div>
             </div>
 
         </header> <!-- #header -->
     
         <div id="navwrap" class="clearfix">
-            <!-- Navigation: -->
             <nav id="nav" role="navigation" class="xnav-colorscheme-dark">
                 <!--<a href="javascript:void(0);" id="close-nav">x</a>-->
                 <a class="nav-toggler" id="hide-nav" href="#nonav">Skjul meny</a>
@@ -376,8 +365,7 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
                     out.println("<!-- An error occured while trying to include main navigation (using template '" + menuTemplate + "'): " + e.getMessage() + " -->");
                 }
                 %>
-            </nav><!-- #nav -->
-            <!-- Done with navigation -->
+            </nav>
         </div><!-- #navwrap -->
     
         <%
@@ -410,7 +398,7 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
             
             
     <a id="contentstart"></a>
-    <!--<article class="main-content">-->
+    <!--<article class="main-content<%= (portal ? " portal" : "") %>">-->
 </cms:template>
             
 <cms:template element="contentbody">
@@ -426,7 +414,7 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
     <footer id="footer">
         <div id="footer-content">
             <% 
-            cms.includeAny("/" + locale + "/footer-content.html");
+            cms.includeAny("/" + loc + "/footer-content.html");
             //cms.getContent("/" + "no" + "/footer.html", "body", loc); // won't work ...
             %>
         </div>
@@ -435,12 +423,53 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
     </div></div><!-- wrappers -->
     
 <script type="text/javascript">
+// Loading fonts like this requires the WebFont script in <head> section
 WebFont.load({
     google: {
         families: ['Old Standard TT', 'Open Sans', 'Droid Sans', 'Droid Serif']
     }
 });
-      
+
+$(document).ready(function() {
+    // Prepare Highslide (if necessary)
+    readyHighslide('<%= cms.link("/system/modules/no.npolar.common.highslide/resources/js/highslide/highslide.min.css") %>', 
+                    '<%= cms.link("/system/modules/no.npolar.common.highslide/resources/js/highslide/highslide.js") %>');
+    
+    // Blurry hero image background
+    if ($('.article-hero')[0]) {
+        makeBlurryHeroBackground('<%= cms.link("/system/modules/no.npolar.util/resources/js/stackblur.min.js") %>');
+    }
+    
+    // qTip tooltips
+    makeTooltips('<%= cms.link("/system/modules/no.npolar.common.jquery/resources/qtip2/2.1.1/jquery.qtip.min.css") %>',
+                    '<%= cms.link("/system/modules/no.npolar.common.jquery/resources/jquery.qtip.min.js") %>');
+                    
+    // Track clicks
+    $('#identity').click(function() {
+        try { ga('send', 'event', 'UI interactions', 'clicked site navigation', 'identity area'); } catch(ignore) {}
+    });
+    $('#nav_topmenu > li:first-child').click(function() {
+        try { ga('send', 'event', 'UI interactions', 'clicked site navigation', 'home link in menu'); } catch(ignore) {}
+    });
+    $('#toggle-nav').click(function() {
+        try { ga('send', 'event', 'UI interactions', 'clicked menu toggler', (smallScreenMenuIsVisible() ? 'opened menu' : 'closed menu')); } catch(ignore) {}
+    });
+    
+    //initUserControls();
+    
+    // Open all links to the NINA full-screen app in new tabs
+    $('a[href^="http://www2.nina.no/Seapop/seapophtml/"]').attr('target', '_blank');
+    // Open all PDF links in new tabs
+    $('a[href$=".pdf"], a[href*=".pdf?"]').attr('target', '_blank');
+    
+    if (!Modernizr.svg) {
+        // Fallback to .png logo
+        $('#identity-image').attr({ src : $('#identity-image').attr('src').replace('.svg', '.png') });
+    }
+});
+
+// Moved to commons.js:
+/*      
 var large = 800;
 var bigScreen = true;  // Default: Browsers with no support for matchMedia (like IE9 and below) will use this value
 try {
@@ -448,27 +477,6 @@ try {
 } catch (err) {
     // Retain default value
 }
-
-
-
-
-$(document).ready(function() {
-    initUserControls();
-    
-    // Open all links to the NINA full-screen app in new tabs
-    $('a[href^="http://www2.nina.no/Seapop/seapophtml/"]').attr('target', '_blank');
-    // Open all PDF links in new tabs
-    $('a[href$=".pdf"], a[href*=".pdf?"]').attr('target', '_blank');
-    
-    if (bigScreen && Modernizr.cssfilters) {
-        // Blurry version of the hero image as background
-        $('.article-hero').append( $('.article-hero-content > figure > img').clone() );
-    }
-    if (!Modernizr.svg) {
-        // Fallback to .png logo
-        $('#identity-image').attr({ src : $('#identity-image').attr('src').replace('.svg', '.png') });
-    }
-});
 
 function initUserControls() {
     //if (smallScreenMenuIsVisible) {
@@ -549,7 +557,6 @@ function initUserControls() {
 
     layItOut();
 }
-
 function layItOut() {
     var bigScreen = true;
     try {
@@ -570,22 +577,6 @@ function layItOut() {
         }
         $('#searchbox').removeAttr('class');
         $('#searchbox').removeAttr('style');
-
-        // 3rd and deeper level menus
-        /*
-        $('#nav ul ul li.has_sub').not('.inpath').mouseenter(function() {
-                $(this).addClass('subnav-popup');
-        });
-        $('#nav ul ul li.has_sub').not('.inpath').mouseleave(function() {
-            $(this).removeClass('subnav-popup');
-        });
-        */
-        /*$('#nav ul ul li.has_sub').not('.inpath').children('a').first().focus(function() {
-            $(this).parents('li').first().addClass('subnav-popup');
-        });
-        $('#nav ul ul li.has_sub').not('.inpath').children('a').first().blur(function() {
-            $(this).parents('li').first().removeClass('subnav-popup');
-        });*/
     }
     else {
         $('#subnavigation').remove(); // Remove the big screen submenu
@@ -607,7 +598,73 @@ function mouseFriendly() {
 function smallScreenMenuIsVisible() {
     return $('html').hasClass('navigating');
 }
+*/
 </script>
+<% 
+// Enable Analytics 
+// (... but not if the "visitor" is actually a logged-in user)
+if (!loggedInUser) {
+%>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-770196-14', 'auto');
+ga('send', 'pageview');
+</script>
+<script type="text/javascript">
+/*
+Script: Autogaq 2.1.6 (http://redperformance.no/autogaq/)
+Last update: 6 May 2015
+Description: Finds external links and track clicks as Events that gets sent to Google Analytics
+Compatibility: Google Universal Analytics
+*/
+!function(){function a(a){var c=a.target||a.srcElement,f=!0,i="undefined"!=typeof c.href?c.href:"",j=i.match(document.domain.split(".").reverse()[1]+"."+document.domain.split(".").reverse()[0]);if(!i.match(/^javascript:/i)){var k=[];if(k.value=0,k.non_i=!1,i.match(/^mailto\:/i))k.category="contact",k.action="email",k.label=i.replace(/^mailto\:/i,""),k.loc=i;else if(i.match(d)){var l=/[.]/.exec(i)?/[^.]+$/.exec(i):void 0;k.category="download",k.action=l[0],k.label=i.replace(/ /g,"-"),k.loc=e+i}else i.match(/^https?\:/i)&&!j?(k.category="outbound traffic",k.action="click",k.label=i.replace(/^https?\:\/\//i,""),k.non_i=!0,k.loc=i):i.match(/^tel\:/i)?(k.category="contact",k.action="telephone",k.label=i.replace(/^tel\:/i,""),k.loc=i):f=!1;f&&(a.preventDefault(),g=k.loc,h=a.target.target,ga("send","event",k.category.toLowerCase(),k.action.toLowerCase(),k.label.toLowerCase(),k.value,{nonInteraction:k.non_i}),b())}}function b(){"_blank"==h?window.open(g,"_blank"):window.location.href=g}function c(a,b,c){a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent("on"+b,function(){return c.call(a,window.event)})}var d=/\.(zip|exe|dmg|pdf|doc.*|xls.*|ppt.*|mp3|txt|rar|wma|mov|avi|wmv|flv|wav)$/i,e="",f=document.getElementsByTagName("base");f.length>0&&"undefined"!=typeof f[0].href&&(e=f[0].href);for(var g="",h="",i=document.getElementsByTagName("a"),j=0;j<i.length;j++)c(i[j],"click",a)}();
+</script>
+<script type="text/javascript">
+/*
+Script: Still here beacon (Based on http://redperformance.no/google-analytics/time-on-site-manipulasjon/)
+Last update: 3 Nov 2015
+Description: Sends an event to Google Analytics every N seconds after the page has loaded, to improve time-on-site metrics.
+    Works like a beacon, regularly signaling that the visitor is "still here".
+    By changing nonInteraction to false, beacon beeps are treated as interactions. The most notable effect 
+    of this will be that any visit that produces at least one beacon beep will not be considered a bounce.
+Compatibility: Google Universal Analytics
+*/
+var secondsOnPage = 0; // How many (active) seconds the user has spent on this page
+var pageVisible = true; // Flag that indicates whether or not the page is visible, see http://www.samdutton.com/pageVisibility/
+var beaconInterval = 10; // Frequency at which to send the beacon signal (in seconds)
+function handleVisibilityChange() {
+    try {
+        if (document['hidden']) {
+            pageVisible = false;
+        } else {
+            pageVisible = true;
+        }
+    } catch (err) {
+        pageVisible = true;
+    }
+}
+// Set initial page visibility flag
+handleVisibilityChange();
+// Set the visibility change handler
+document.addEventListener('visibilitychange', handleVisibilityChange, false);
+// Initialize counter and beacon signal
+window.setInterval(
+    function() {
+        try {
+            if (pageVisible) {
+                if (++secondsOnPage % beaconInterval === 0) {
+                    ga('send', 'event', 'seconds on page', 'log', secondsOnPage, {nonInteraction: true});
+                }
+            }
+        } catch (ignore) { }
+    }, 1000);
+</script>
+<% 
+}
+%>
 </body>
 </html>
 <%

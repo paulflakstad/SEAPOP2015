@@ -251,8 +251,9 @@ a#toggle-nav:hover,
 	font-weight:bold;
 }
 #nav li.current > a {
-	background-color:#08d;
-	color:#fff;
+    background-color:#08d;
+    background-color:rgba(0,0,0,0.05);
+    /*color:#fff;*/
 }
 #nav.nav-colorscheme-dark li.current > a {
 	background-color:#adf;
@@ -337,7 +338,7 @@ a.nav-toggler {
     padding:0;
     list-style: none;
 }
-/* 3rd level lists */
+/* 3rd-level lists and deeper */
 #nav ul ul ul {
     list-style: disc;
     padding-left:1em;
@@ -347,11 +348,11 @@ a.nav-toggler {
 #nav.nav-colorscheme-dark ul ul ul {
     border-left-color:#393939;
 }
-/* 1st level list */
+/* 1st-level list */
 #nav > ul {
     /*background-color:#08f;*/
 }
-/* 1st level items */
+/* 1st-level items */
 #nav > ul > li {
     /*display:inline-block;
     position:relative;*/
@@ -359,7 +360,7 @@ a.nav-toggler {
     position:relative;
     float:left;
 }
-/* 1st level links */
+/* 1st-level links */
 #nav > ul > li > a {
     display:block;
     padding:1em 1.2rem;
@@ -418,21 +419,21 @@ a.nav-toggler {
 #nav.nav-colorscheme-dark > ul > li.inpath.infocus > a {
     color:#adf;
 }
-/* 2nd level list (the submenu) */
+/* 2nd-level list (1st submenu) */
 #nav > ul > li > ul {
 }
 #nav > ul > li:last-child > ul {
     left:auto;
     right:9999px;
 }
-/* 2nd level list (the submenu) */
-#nav > ul > li > ul > li.inpath {
+/* 2nd or deeper level "inpath" list items */
+#nav ul ul li.inpath {
     border-left:3px solid orange;
 }
-#nav.nav-colorscheme-dark > ul > li > ul > li.inpath {
+#nav.nav-colorscheme-dark ul ul li.inpath {
     border-left-color:#adf;
 }
-/* 2nd level links */
+/* 2nd-level links */
 #nav > ul > li > ul > li > a {
     display:block;
     float:none;
@@ -440,13 +441,14 @@ a.nav-toggler {
 
 .tabbing #nav > ul > li.infocus > ul,
 .tabbing #nav > ul > li > ul {
-    -webkit-animation: fadein 0s;
+    /*-webkit-animation: fadein 0s;
     -moz-animation: fadein 0s;
     -ms-animation: fadein 0s;
     -o-animation: fadein 0s;
     animation: fadein 0s;
+    */
 }
-/* 1st level items, when hovered */
+/* 1st-level items, when hovered */
 #nav > ul > li > a:hover,
 #nav > ul > li.infocus > a {
     background-color:#fff;
@@ -456,17 +458,18 @@ a.nav-toggler {
     background-color:#2a2a2a;
 }
 
-/* 2nd level list, when 1st level item is hovered ("SHOW submenu") */
-#nav > ul > li:hover > ul,
-/*#nav > ul > li.infocus > ul,*/
-#nav > ul li.infocus > ul { /* MUST BE FLAGGED WITH class="infocus" on focus */
+/* "Show submenu when hovering parent item (anywhere in the menu)" */
+#nav li:hover > ul,
+#nav li:focus > ul,
+#nav li.infocus > ul { /* MUST BE FLAGGED WITH class="infocus" on focus */
     left:0;
     opacity:1;
-    -webkit-animation: fadein .2s;
+    /*-webkit-animation: fadein .2s;
     -moz-animation: fadein .2s;
     -ms-animation: fadein .2s;
     -o-animation: fadein .2s;
-    animation: fadein .2s;
+    animation: fadein .2s;*/
+   /* transition: opacity 0.75s ease-in-out;*/
     z-index:99;
 }
 #nav > ul > li:last-child:hover > ul/*,
@@ -475,7 +478,7 @@ a.nav-toggler {
     right:0;
 }
 
-/* 2nd level items */
+/* 2nd-level items */
 #nav > ul > li > ul > li {
     border-bottom:1px solid #eee;
 }
@@ -493,10 +496,11 @@ a.nav-toggler {
     color:#333;
     padding:1em;
     width:100%;
-    position: absolute;
+    position:absolute;
     left:-9999px;
-    opacity:0.5;
+    opacity:0.2;
     width:240px;
+    transition: opacity 0.3s ease-in-out; /* hoverDelay interferes with the time here */
 }
 #nav.nav-colorscheme-dark ul ul {
     background-color:#444;
@@ -506,12 +510,12 @@ a.nav-toggler {
 }
 /* 2nd and deeper level items */
 #nav ul ul li {
-	position:relative;
+    position:relative;
 }
 /* 2nd and deeper level links */
 #nav ul ul a {
-	padding:0.5em;
-	transition: all .5s ease;
+    padding:0.5em;
+    transition: all .5s ease;
 }
 #nav.nav-colorscheme-dark ul ul a {
 	color:#8cf;
@@ -528,7 +532,7 @@ a.nav-toggler {
 }
 /* 3rd and deeper level lists */
 #nav ul ul ul {
-    transition:opacity 0.4s ease;
+    /*transition:opacity 0.4s ease;*/
 }
 #nav ul ul li.inpath {
     background-color:#fafafa;
@@ -551,7 +555,7 @@ a.nav-toggler {
     /*top:0.25em;
     left:90%;*/
     opacity:1;
-    z-index:999;	
+    z-index:999;
 
     top:0em;
     left:94%;
@@ -591,11 +595,11 @@ a.nav-toggler {
 	font-weight:bold;
 }
 #nav ul ul li.current > a span {
-    background-color:#08d;
+    /*background-color:#08d;
     padding:.5em;
     border-radius:3px;
     color:#fff;
-    display:block;
+    display:block;*/
 }
 #nav.nav-colorscheme-dark ul ul li.current > a span {
 	background-color:#adf;
@@ -604,6 +608,13 @@ a.nav-toggler {
 /* 2nd level items that are nth-children */
 #nav > ul > li > ul > li:nth-child(4n+4) {
 	/*clear:right;*/
+}
+
+.js #nav ul ul {
+    transition: opacity 0.55s ease-in-out; /* use a longer time, due to hoverDelay interference */
+}
+.js.tabbing #nav ul ul {
+    transition: opacity 0.2s ease-in-out; /* use a very short time when tabbing */
 }
 
 .js #nav > ul > li:hover > ul {
