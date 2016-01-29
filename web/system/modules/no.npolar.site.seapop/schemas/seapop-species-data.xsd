@@ -17,6 +17,7 @@
             <xsd:element name="SpeciesName" type="OpenCmsString" />
             <xsd:element name="SpeciesScientificName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="SpeciesPage" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ExcludeFromTimeSeriesOverviews" type="OpenCmsBoolean" default="false" />
             <xsd:element name="Pelagic" type="OpenCmsBoolean" default="false" />
             <xsd:element name="CoastalBound" type="OpenCmsBoolean" default="false" />
             <xsd:element name="Diving" type="OpenCmsBoolean" default="false" />
@@ -46,6 +47,7 @@
             </resourcebundles>
             <mappings>
                 <mapping element="SpeciesName" mapto="property:Title" />
+                <mapping element="ExcludeFromTimeSeriesOverviews" mapto="property:timeseries.exclude" />
             </mappings>
             <tabs>
                 <tab element="SpeciesName" collapse="false" name="General content" />

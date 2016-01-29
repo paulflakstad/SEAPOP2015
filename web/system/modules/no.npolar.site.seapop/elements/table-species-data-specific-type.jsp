@@ -49,7 +49,8 @@
     String requestFileUri = cms.getRequestContext().getUri();
     
     final String dataFilesFolder = "/no/artsdata/";
-    SpeciesDataCollection speciesDataEntries = new SpeciesDataCollection(dataFilesFolder, cms);
+    List<CmsResource> excludedFiles = cmso.readResourcesWithProperty(dataFilesFolder, "timeseries.exclude", "true", CmsResourceFilter.DEFAULT_FILES.addRequireType(OpenCms.getResourceManager().getResourceType("seapop_species_data").getTypeId()));
+    SpeciesDataCollection speciesDataEntries = new SpeciesDataCollection(dataFilesFolder, cms, excludedFiles);
 	
 	Iterator<SpeciesData> iSpeciesDataEntries = null;
 	

@@ -48,9 +48,10 @@
     String requestFileUri = cms.getRequestContext().getUri();
     
     final String dataFilesFolder = "/no/artsdata/";
-    SpeciesDataCollection speciesDataEntries = new SpeciesDataCollection(dataFilesFolder, cms);
     
+    List<CmsResource> excludedFiles = cmso.readResourcesWithProperty(dataFilesFolder, "timeseries.exclude", "true", CmsResourceFilter.DEFAULT_FILES.addRequireType(OpenCms.getResourceManager().getResourceType("seapop_species_data").getTypeId()));
     List<String> excludeTypes = Arrays.asList( new String[] { SpeciesDataLinkType.TIMING } );
+    SpeciesDataCollection speciesDataCollection = new SpeciesDataCollection(dataFilesFolder, cms, excludedFiles);
     
 %>
         
@@ -71,7 +72,8 @@
                 </tr>
                 <tr class="th-v">
                     <%
-                    Iterator<SpeciesData> iSpeciesDataEntries = speciesDataEntries.get().iterator();
+                    List<SpeciesData> speciesDataEntries = speciesDataCollection.get();
+                    Iterator<SpeciesData> iSpeciesDataEntries = speciesDataEntries.iterator();
                     while (iSpeciesDataEntries.hasNext()) {
                         out.println("<th scope=\"col\"><span>" + iSpeciesDataEntries.next().getName() + "</span></th>");
                     }
@@ -96,7 +98,7 @@
                 </tr>
 
                 <% 
-                out.println(speciesDataEntries.toHtmlTableRows(cms, null, SpeciesDataLinkType.TYPES_ORDER_DEFAULT, excludeTypes, locationsInOrder));
+                out.println(speciesDataCollection.toHtmlTableRows(cms, null, SpeciesDataLinkType.TYPES_ORDER_DEFAULT, excludeTypes, locationsInOrder));
                 %>
             <!--</table>-->
         </div>
