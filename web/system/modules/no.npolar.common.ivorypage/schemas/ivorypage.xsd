@@ -1,0 +1,51 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>		
+	<xsd:include schemaLocation="opencms://system/modules/no.npolar.common.pageelements/schemas/paragraph.xsd"/>
+    <xsd:include schemaLocation="opencms://system/modules/no.npolar.common.pageelements/schemas/extension.xsd"/>
+    <xsd:include schemaLocation="opencms://system/modules/no.npolar.common.pageelements/schemas/linklist.xsd"/>
+    <xsd:include schemaLocation="opencms://system/modules/no.npolar.common.pageelements/schemas/linklistgroup.xsd"/>
+	
+	<xsd:element name="IvoryPages" type="OpenCmsIvoryPages"/>
+	
+	<xsd:complexType name="OpenCmsIvoryPages">
+            <xsd:sequence>
+                <xsd:element name="IvoryPage" type="OpenCmsIvoryPage" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsIvoryPage">
+        <xsd:sequence>
+            <xsd:element name="PageTitle" type="OpenCmsString" />
+            <xsd:element name="Extension" type="OpenCmsExtension" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="TopWidget" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Intro" type="OpenCmsHtml" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Paragraph" type="OpenCmsParagraph" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Attachments" type="OpenCmsLinkList" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="RelatedPages" type="OpenCmsLinkList" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+	</xsd:complexType>
+
+	<xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundle name="no.npolar.common.ivorypage.workplace"/>
+            <mappings>
+                <mapping element="PageTitle" mapto="property:Title" />
+            	<mapping element="Intro" mapto="property:Description" />
+                <mapping element="Extension/URI" mapto="property:template-include-file" />
+                <mapping element="Extension/WrapInside" mapto="property:template-include-file-wrap" />
+                <mapping element="Extension/SearchFolder" mapto="property:template-search-folder" />
+            </mappings>
+            <layouts>
+                <layout element="Intro" widget="HtmlWidget" configuration="height:140px,source,link" />	
+            </layouts>
+            <searchsettings>
+                <searchsetting element="TopWidget" searchcontent="false" />
+                <searchsetting element="Attachments" searchcontent="false" />
+                <searchsetting element="RelatedPages" searchcontent="false" />
+                <searchsetting element="Extension" searchcontent="false" />
+            </searchsettings>
+        </xsd:appinfo>
+	</xsd:annotation> 
+</xsd:schema>
