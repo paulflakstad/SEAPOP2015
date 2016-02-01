@@ -16,6 +16,7 @@
                  org.opencms.file.CmsResource,
                  org.opencms.main.OpenCms,
                  org.opencms.main.CmsException,
+                 org.opencms.util.*,
                  org.opencms.loader.CmsImageScaler" session="true" %><%!
 				 
 public String getImageContainer(CmsAgent cms, 
@@ -205,7 +206,7 @@ String imageTag                     = null; // The <img> tag
 String imageSource                  = null; // The image's source or copyright proprietor
 String imageCaption                 = null; // The image caption
 String imageTitle                   = null; // The image title (the alt text)
-String imageStyle					= null; // The image container's (optional) custom CSS styles
+String imageStyle                   = null; // The image container's (optional) custom CSS styles
 int    imageRescaleWidth            = -1;   // The width (in pixels) to rescale image to
 String imageFloatChoice             = null; // Left, right, none
 String imageTypeChoice              = null; // Photo, graphics, etc.
@@ -246,7 +247,7 @@ while (container.hasMoreContent()) {
     // Process content (paragraphs)
     while (paragraphs.hasMoreContent()) {
         paragraphCounter++;
-        String paragraphId = "content-section-" + paragraphCounter;
+        
         // Clear the image lists
         imagesBefore.clear();
         imagesFullWidthAfter.clear();
@@ -271,6 +272,8 @@ while (container.hasMoreContent()) {
             if (!accordion) {
                 out.println("<h2>" + titleRes + "</h2>");
             } else {
+                String paragraphId = CmsHtmlExtractor.extractText(titleRes, "UTF-8").toLowerCase().replaceAll("\\s", "-").replaceAll("\\(|\\)|\\&|\\?|\\,|\\.", "");
+                //String paragraphId = "content-section-" + paragraphCounter;
                 out.println("<a class=\"toggletrigger\" aria-controls=\"" + paragraphId + "\" href=\"#" + paragraphId + "\" style=\"font-size:large; padding:0.2em;\">"
                         + "<h2 style=\"display:inline; font-size:1em;\">" + titleRes + "</h2>"
                         + "</a>");
@@ -543,9 +546,10 @@ while (container.hasMoreContent()) {
             extFile = cms.contentshow(paragraphs, "Extension");
             if (CmsAgent.elementExists(extFile)) {
                 //out.println("<!-- Extension present: " + extFile + " -->");
-				extFilePath = extFile;
-				if (extFile.contains("?"))
-                	extFilePath = extFile.split("\\?")[0];
+		extFilePath = extFile;
+		if (extFile.contains("?")) {
+                    extFilePath = extFile.split("\\?")[0];
+                }
 				
                 extensionIsJsp = cmso.readResource(extFilePath).getTypeId() == OpenCms.getResourceManager().getResourceType("jsp").getTypeId();
                 // Get URL parameters from the extension (e.g. when extension URI is "/my/extension.jsp?folder=/my/folder/&heading=h3")
@@ -575,7 +579,7 @@ while (container.hasMoreContent()) {
                 }
 				
             } else {
-                out.println("<!-- No extension present -->");
+                //out.println("<!-- No extension present -->");
             }
         } catch (Exception e3) {
             out.println("<!-- Oh noes, the extension crashed it! Message was: " + e3.getMessage() + " -->");
