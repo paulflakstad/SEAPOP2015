@@ -6,6 +6,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="org.opencms.jsp.*, org.opencms.file.*, org.opencms.file.types.*, org.opencms.xml.content.*"%>
 <%@ page import="org.opencms.main.*,
+                 org.opencms.util.CmsRequestUtil,
                  org.opencms.loader.CmsImageScaler" %>
 <%@ page session="true" %>
 
@@ -118,11 +119,12 @@ final boolean DEBUG     = false;    // Set to true to print out debugging data
 final String IMAGE      = loc.equalsIgnoreCase("en") ? "Image" : "Bilde";
 
 I_CmsXmlContentContainer container, paragraphs, imageContainer; // Containers
-String pageTitle, pageIntro, title, text, illustrationFrame; // String variables
+String pageTitle, pageIntro, title, text, topWidget, illustrationFrame; // String variables
 
 // Include-file
 String includeFile      = cms.property("template-include-file");
 boolean wrapInclude     = cms.property("template-include-file-wrap") != null ? (cms.property("template-include-file-wrap").equalsIgnoreCase("outside") ? false : true) : true;
+boolean titleHidden     = Boolean.valueOf(cms.property("Title.hidden")); // Hide title on-screen?
 
 
 // 
@@ -171,10 +173,12 @@ while (container.hasMoreContent()) {
     pageTitle = cms.contentshow(container, "PageTitle");
     pageIntro = cms.contentshow(container, "Intro");
     author = cms.contentshow(container, "ByLine");
+    
+    topWidget = cms.contentshow(container, "TopWidget");
+    
     if (!CmsAgent.elementExists(author))
         author = cms.getCmsObject().readPropertyObject(requestFileUri, "Author", true).getValue();
-    /*if (author == null)
-        author = "Webmaster";*/
+    
     if (author != null) {
         String[] authorList = author.split(",");
         String profilePath = null;
@@ -204,8 +208,22 @@ while (container.hasMoreContent()) {
     // HTML OUTPUT
     //
     out.println("<div class=\"main-content\">");
-    out.println(CmsAgent.elementExists(pageTitle) ? ("<h1>" + pageTitle + "</h1>") : "");
-        out.println("<div class=\"byline\">" + (byline != null ? byline : "") + "</div>");
+    out.println(CmsAgent.elementExists(pageTitle) ? ("<h1" + (titleHidden ? " class=\"hidden\"" : "") + ">" + pageTitle + "</h1>") : "");
+    out.println("<div class=\"byline\">" + (byline != null ? byline : "") + "</div>");
+        
+    // Code below based on similar routine in portalpage template
+    if (CmsAgent.elementExists(topWidget)) {
+        topWidget += (topWidget.contains("?") ? "&" : "?") + "dynamic_container=ivorypage_widget_top";
+        String topWidgetPath = topWidget.split("\\?")[0];
+        String topWidgetParams = topWidget.split("\\?")[1];
+        try {
+            cms.includeAny(topWidgetPath, null, CmsRequestUtil.createParameterMap(topWidgetParams));
+        } catch (Exception ee) {
+            out.println("<!-- Failed to include dynamic content '" + topWidget + "' with includeAny(), error was: " + ee.getMessage() + " -->");
+            cms.include(topWidgetPath, null, CmsRequestUtil.createParameterMap(topWidgetParams));
+        }
+    }
+        
     if (CmsAgent.elementExists(pageIntro))
         out.println("<div class=\"ingress\">" + pageIntro + "</div>");
     
@@ -215,144 +233,7 @@ while (container.hasMoreContent()) {
     //
     cms.include(PARAGRAPH_HANDLER);
     
-    /*
-    paragraphs = cms.contentloop(container, "Paragraph");
-    while (paragraphs.hasMoreContent()) {
-        //
-        // Get paragraph
-        //
-        title       = cms.contentshow(paragraphs, "Title");
-        text        = CmsAgent.stripParagraph(cms.contentshow(paragraphs, "Text"));
-        
-        //
-        // Get images
-        //
-        try {
-            imageContainer = cms.contentloop(paragraphs, "FillImage");
-            // Get all images as a list (each item in the list is a map with one image's info)
-            images = cms.getCmsXmlContentMap(imageFields, imageContainer);
-        }
-        catch (Exception npe) {
-            throw new ServletException("Exception occured while reading XML image information from '" + requestFileUri + "': " + npe.getMessage());
-        }
-        
-        //
-        // Process images
-        //
-        try {
-            StringMap currentImage  = new StringMap();  // Holds the current image's information
-            // Loop over all images
-            for (i = 0; i < images.size(); i++) {
-                // Get the current original image's info
-                currentImage    = (StringMap)images.get(i);
-                // Read each info part
-                imagePath       = currentImage.getString("URI");
-                imageTitle      = currentImage.getString("Title");
-                imageText       = currentImage.getString("Text");
-                imageSource     = currentImage.getString("Source");
-                
-                imageDimensions = cms.getImageSize(cms.getCmsObject().readResource(imagePath));
-                imageWidth = imageDimensions[0];
-                
-                // DOWNSCALE - the original's width is too large
-                if (imageWidth > IMG_WIDTH_M) {
-                    // Set image dimensions for scaled version
-                    imageWidth = IMG_WIDTH_M;
-                    //imageHeight = cms.calculateNewImageHeight(imageWidth, imagePath);
-                    
-                    // Create a new scaler with the given parameters
-                    imgPro = new CmsImageProcessor("w:"+imageWidth+",h:"+cms.calculateNewImageHeight(imageWidth, imagePath)+",t:3,q:99");
-                    
-                    // Get the <img> tag for the scaled version
-                    imageTag = cms.img(imagePath, imgPro, null);
-                    // Link the downscaled version to the fullsize image
-                    imageTag = "<a href=\"" + imagePath + "\" class=\"highslide\" onclick=\"return hs.expand(this);\">" +
-                                        imageTag +
-                                     "</a>";
-                }
-                // No downscale required, image dimensions were within boundaries
-                else {
-                    imageTag = "<img src=\"" + imagePath + "\" />";
-                    imageWidth = imageDimensions[0];
-                }
-
-                // Insert class and required 'alt' attribute inside the <img> tag
-                //imageTag = imageTag.replace("<img", "<img class=\"illustration-image\"");
-                imageTag = imageTag.replace("/>", "alt=\"".concat(imageTitle).concat("\" />"));
-                illustrationFrame = cms.getImageContainer(true, imageTag, imageWidth, 1, imageText, IMAGE.concat(": "), imageSource);
-                imageHTML.add(illustrationFrame);
-            } // for (all paragraph images)
-        } // try (process paragraph images)
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new javax.servlet.ServletException("Exception occured while processing the images: " + e.getMessage());
-        }
-
-        //
-        // HTML output
-        //
-        out.println("<div class=\"paragraph\">");
-        if (CmsAgent.elementExists(title))
-            out.println("<h2>" + title + "</h2>"); // The paragraph title
-        
-        if (CmsAgent.elementExists(text)) {
-            out.println("<div class=\"text\">");
-
-            // If there are images attached to the paragraph, print out these
-            if (!imageHTML.isEmpty()) {
-                for (i = 0; i < imageHTML.size(); i++) {
-                    out.println((String)imageHTML.get(i));
-                }
-                // Clear the maps, so we don't print these images on the next paragraph(s) as well
-                imageHTML.clear();
-                images.clear();
-            }
-            out.println(text); // The paragraph text
-            out.println("</div><!-- text -->");
-        }
-        
-        imageContainer = cms.contentloop(paragraphs, "PosterImage");
-        while (imageContainer.hasMoreContent()) {
-            // Get the image info
-            imagePath    = cms.contentshow(imageContainer, "URI");
-            imageTitle   = cms.contentshow(imageContainer, "Title");
-            imageText    = cms.contentshow(imageContainer, "Text");
-            imageSource  = cms.contentshow(imageContainer, "Source");
-            
-            // Get the image dimensions
-            imageDimensions = cms.getImageSize(cms.getCmsObject().readResource(imagePath));
-            imageWidth = imageDimensions[0];
-            // Check the image width, set to max. value if it's too large
-            if (imageWidth > IMG_WIDTH_XL) {
-                imageWidth = IMG_WIDTH_XL;
-                
-                imgPro = new CmsImageProcessor("w:"+imageWidth+",h:"+cms.calculateNewImageHeight(imageWidth, imagePath)+",t:3,q:99");
-                
-                
-                //out.println("<br/>Image being scaled to " + imageWidth + "x" + cms.calculateNewImageHeight(imageWidth, imagePath) + "<br/>");
-                //out.println("(Scaler has " + imgPro.getWidth() + "x" + imgPro.getHeight() + ")<br/>");
-                
-                imageTag = cms.img(imagePath, imgPro, null);
-                
-                //out.println("Image tag: " + imageTag.replaceAll("<", "&lt;").replaceAll(">", "&gt;") + "<br/>");
-                
-                imageTag = "<a href=\"" + cms.link(imagePath) + "\" class=\"highslide\" onclick=\"return hs.expand(this);\">" + 
-                        imageTag + "</a>";
-            }
-            else {
-                imageTag = "<img src=\"" + cms.link(imagePath) + "\" />";
-            }
-            
-            imageTag = imageTag.replace("/>", "alt=\"".concat(imageTitle).concat("\" />"));
-            
-            out.print("<div class=\"fullwidth\">" +
-                        cms.getImageContainer(false, imageTag, imageWidth, 0, imageText, IMAGE.concat(": "), imageSource) + 
-                      "</div>");
-        }
-
-        out.println("</div> <!-- paragraph -->");
-    } // While paragraphs.hasMoreContent()
-    //*/
+    
     
     // NEW INCLUDE PROCEDURE
     // If the include file should NOT be wrapped inside the "content-body" div
