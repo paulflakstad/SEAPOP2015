@@ -39,7 +39,7 @@ final String PUBLICATIONS_LINK_TEXT = loc.equalsIgnoreCase("no") ? "Flere publik
 
 
 %>
-<div class="layout-gruop single">
+<div class="layout-group single">
     <div class="layout-box">
         <%
         cms.includeAny("/" + loc + "/frontpage-buttons.html");
