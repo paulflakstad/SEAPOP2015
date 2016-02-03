@@ -15,8 +15,8 @@ final String PARAGRAPH_HANDLER = "/system/modules/no.npolar.common.pageelements/
 %>
         
 <div class="layout-group double">
-    <div class="layout-box">
-        <h2>Locations</h2>
+    <section class="layout-box">
+        <h2 class="layout-box_heading">Locations</h2>
         <%
         I_CmsXmlContentContainer fileContainer = cms.contentload("singleFile", URI_LOCATIONS_FILE, false);
         if (fileContainer.hasMoreResources()) {
@@ -27,9 +27,9 @@ final String PARAGRAPH_HANDLER = "/system/modules/no.npolar.common.pageelements/
                 out.println("<!-- fileContainer was NULL -->");
         }
         %>
-    </div>
-    <div class="layout-box">
-        <h2>Species</h2>
+    </section>
+    <section class="layout-box">
+        <h2 class="layout-box_heading">Species</h2>
         <%
         fileContainer = cms.contentload("singleFile", URI_SPECIES_FILE, false);
         if (fileContainer.hasMoreResources()) {
@@ -40,7 +40,7 @@ final String PARAGRAPH_HANDLER = "/system/modules/no.npolar.common.pageelements/
                 out.println("<!-- fileContainer was NULL -->");
         }
         %>
-    </div>
+    </section>
 </div>
 <%
 request.setAttribute("paragraphContainer", null);
