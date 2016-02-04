@@ -265,34 +265,34 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
 %>
 <!--<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Old+Standard+TT:400,700,400italic|Vollkorn:400,700,400italic,700italic|Arvo:400,700italic,400italic,700" />-->
 
-<link rel="stylesheet" type="text/css" href="<%= cms.link("../resources/style/navigation.css") %>" />
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/base.css</cms:link>" />
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/smallscreens.css</cms:link>" media="(min-width:310px)" />
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/largescreens.css</cms:link>" media="(min-width:801px)" />
-<!--<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/nav-off-canvas.css</cms:link>" />-->
-<!--<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/navigation.css</cms:link>" />-->
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/print.css</cms:link>" media="print" />
-<!--<link rel="stylesheet" type="text/css" href="<cms:link>../resources/js/highslide/highslide.css</cms:link>" />-->
-<!--<link rel="stylesheet" type="text/css" href="<cms:link>/system/modules/no.npolar.common.jquery/resources/qtip2/2.1.1/jquery.qtip.min.css</cms:link>" />-->
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/navigation.css") %>" />
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/base.css") %>" />
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/smallscreens.css") %>" media="(min-width:310px)" />
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/largescreens.css") %>" media="(min-width:801px)" />
+<!--<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/nav-off-canvas.css") %>" />-->
+<!--<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/navigation.css") %>" />-->
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/print.css") %>" media="print" />
+<!--<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/js/highslide/highslide.css") %>" />-->
+<!--<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.common.jquery/resources/qtip2/2.1.1/jquery.qtip.min.css") %>" />-->
 
 <!--[if lte IE 8]>
-<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.util/resources/js/html5.js</cms:link>"></script>
-<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.util/resources/js/XXXXXrem.min.js</cms:link>"></script>
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/non-responsive-dynamic.css</cms:link>" />
-<link rel="stylesheet" type="text/css" href="<cms:link>../resources/style/ie8.css</cms:link>" />
+<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.util/resources/js/html5.js") %>"></script>
+<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.util/resources/js/XXXXXrem.min.js") %>"></script>
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/non-responsive-dynamic.css") %>" />
+<link rel="stylesheet" type="text/css" href="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/ie8.css") %>" />
 <![endif]-->
 
-<script type="text/javascript" src="<cms:link>../resources/js/modernizr.js</cms:link>"></script>
+<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/js/modernizr.js") %>"></script>
 <!--[if lt IE 9]>
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <![endif]-->
 <!--[if gte IE 9]><!-->
      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <!--<![endif]-->
-<!--<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.site.seapop/resources/js/highslide/highslide-full.js</cms:link>"></script>-->
-<script type="text/javascript" src="<cms:link>../resources/js/commons.js</cms:link>"></script>
-<!--<script type="text/javascript" src="<cms:link>/system/modules/no.npolar.common.jquery/resources/jquery.hoverintent.min.js</cms:link>"></script>-->
-<!--<script type="text/javascript" src="<cms:link>../resources/js/nav-off-canvas.js</cms:link>"></script>-->
+<!--<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/js/highslide/highslide-full.js") %>"></script>-->
+<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/js/commons.js") %>"></script>
+<!--<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.common.jquery/resources/jquery.hoverintent.min.js") %>"></script>-->
+<!--<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/js/nav-off-canvas.js") %>"></script>-->
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
 
 <style type="text/css">
@@ -312,7 +312,7 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
                 <div class="fullwidth-centered">
 
                     <a id="identity" href="<%= HOME_URI %>" tabindex="2">
-                        <img id="identity-image" src="<%= cms.link("../resources/style/logo-seapop.svg") %>" alt="" />
+                        <img id="identity-image" src="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/style/logo-seapop.svg") %>" alt="" />
                         <span id="identity-text">SEAPOP<span id="identity-tagline">Om sjøfugl – for et rikere hav</span></span>
                     </a>
 
