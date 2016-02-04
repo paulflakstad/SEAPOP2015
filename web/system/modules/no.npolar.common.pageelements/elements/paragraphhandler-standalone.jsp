@@ -233,6 +233,7 @@ String paragraphHeadingAttribs = DEFAULT_PARAGRAPH_HEADING_ATTRIBS;
 String paragraphMediaClass = "";
 String[] paragraphWrapper = {"<div class=\"paragraph\">", "</div>"};
 String[] paragraphTextWrapper = { "", "" };
+String paragraphHeadingWrapper = "h2";
 try {
     
     if (request.getAttribute("paragraphContainer") != null) {
@@ -247,6 +248,8 @@ try {
             paragraphMediaClass = (String)request.getAttribute("paragraphMediaClass");
         if (request.getAttribute("paragraphTextWrapper") != null) 
             paragraphTextWrapper = (String[])request.getAttribute("paragraphTextWrapper");
+        if (request.getAttribute("paragraphHeadingWrapper") != null) 
+            paragraphHeadingWrapper = (String)request.getAttribute("paragraphHeadingWrapper");
     }
     else {
         // Load the content
@@ -285,12 +288,12 @@ try {
                 out.println("<!--\nERROR trying to resolve content notation for the title '" + title + "'\n-->");
             }
             if (!accordion) {
-                out.println("<h2>" + titleRes + "</h2>");
+                out.println("<" + paragraphHeadingWrapper + ">" + titleRes + "</" + paragraphHeadingWrapper + ">");
             } else {
                 String paragraphId = CmsHtmlExtractor.extractText(titleRes, "UTF-8").toLowerCase().replaceAll("\\s", "-").replaceAll("\\(|\\)|\\&|\\?|\\,|\\.", "");
                 //String paragraphId = "content-section-" + paragraphCounter;
                 out.println("<a class=\"toggletrigger\" aria-controls=\"" + paragraphId + "\" href=\"#" + paragraphId + "\" style=\"font-size:large; padding:0.2em;\">"
-                        + "<h2 style=\"display:inline; font-size:1em;\">" + titleRes + "</h2>"
+                        + "<" + paragraphHeadingWrapper + " style=\"display:inline; font-size:1em;\">" + titleRes + "</" + paragraphHeadingWrapper + ">"
                         + "</a>");
                 out.println("<div id=\"" + paragraphId + "\" class=\"toggletarget\">"); // Extra accordion show/hide container
             }
