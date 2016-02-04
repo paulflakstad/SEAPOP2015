@@ -14,15 +14,15 @@ final String URI_SEATRACK_LOGO = "/images/logos/SEATRACK-logo-draft-67.png";
     <%= ImageUtil.getImage(cms, URI_SEATRACK_LOGO, "SEATRACK") %>
 </div>
 <div class="layout-group triple">
-    <div class="layout-box span2">
+    <div class="layout-box span2 standout">
         <figure style="max-height:600px; overflow:hidden;">
             <%= ImageUtil.getImage(cms, URI_WIDGET_IMAGE) %>
         </figure> 
     </div>
     <div class="layout-box stretch-y standout">
-        <h2 class="">View data</h2>
+        <h2 class="" style="color:#fff;">View data</h2>
         <p>All data is visualized in an <strong>interactive map application</strong>, where you can create your own <strong>custom views</strong> for specific species or locations.</p>
         <!--<p><strong>Free.</strong></p>-->
-        <p><a class="cta cta--button cta--inline-button" href="#">Open the app</a><br><em>or <a href="#">go directly to a species or location</a></em></p>
+        <p><a class="cta cta--button cta--inline-button" href="#">Open the app</a><br><em>or <a href="#locations-and-species">go directly to a species or location</a></em></p>
     </div>
 </div>
