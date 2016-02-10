@@ -925,6 +925,11 @@ $(document).ready( function() {
             layItOut();
         }
     });
+    
+    // Try to responsify images that use heatmaps
+    try {
+        $("img[usemap]").rwdImageMaps();
+    } catch (ignore) {}
 });
 
 
