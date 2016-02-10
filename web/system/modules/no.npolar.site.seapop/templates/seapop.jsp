@@ -261,7 +261,6 @@ if (canonical != null) {
 <meta name="theme-color" content="#ffffff">
 <%
 out.println(cms.getHeaderElement(CmsAgent.PROPERTY_CSS, requestFileUri));
-out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri));
 %>
 <!--<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Old+Standard+TT:400,700,400italic|Vollkorn:400,700,400italic,700italic|Arvo:400,700italic,400italic,700" />-->
 
@@ -294,7 +293,10 @@ out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri)
 <!--<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.common.jquery/resources/jquery.hoverintent.min.js") %>"></script>-->
 <!--<script type="text/javascript" src="<%= cms.link("/system/modules/no.npolar.site.seapop/resources/js/nav-off-canvas.js") %>"></script>-->
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
-
+<%
+out.println(cms.getHeaderElement(CmsAgent.PROPERTY_JAVASCRIPT, requestFileUri));
+out.println(cms.getHeaderElement(CmsAgent.PROPERTY_HEAD_SNIPPET, requestFileUri));
+%>
 <style type="text/css">
     html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
     #body { overflow:hidden; }
