@@ -759,55 +759,103 @@ orange  |  red  |  lightblue  |  green
 
 
 /* BEGIN new layout pattern test */
-.layout-group.double .layout-box {
-	width:50%;
-	/*float:left;*/
+.layout-group {
+    position:relative;
 }
-.card-h .card-image-wrapper,
-.layout-group.triple .layout-box {
-	width:33.333%;
-	float:left;
+.layout-group.triple .layout-box,
+.layout-group.triple .layout-box:first-child,
+.layout-group.triple .layout-box.span2 + .layout-box {
+    width:33.333%;
+    float:left;
 }
 .card-h .card-text,
 .layout-group.triple .layout-box.span2 {
-	width:66.666%;
-	float:left;
+    width:66.666%;
+    float:left;
 }
-.layout-group.quadruple .layout-box {
-	width:25%;
-	/*float:left;*/
+
+.layout-group.triple > .layout-box:nth-of-type(3n+4), /* 4, 7, 10, ...*/
+.layout-group.double > .layout-box:nth-of-type(2n+3), /* 3, 5, 7, 9, ... */
+.layout-group.quadruple > .layout-box:nth-of-type(2n+3) { /* 3, 5, 7, 9, ... */
+    clear:left;
+}
+.layout-group.layout-combo > .layout-box,
+.layout-group.double.layout-combo > .layout-box, 
+.layout-group.triple.layout-combo > .layout-box, 
+.layout-group.quadruple.layout-combo > .layout-box {
+    clear:none;
+}
+
+/* Combos and nesting */
+.layout-group.single .layout-box,
+.layout-group.double .span2,
+.layout-group.double .layout-box.span2,
+.layout-group.triple .span3,
+.layout-group.triple .layout-box.span3,
+.layout-group.quadruple .span3,
+.layout-group.quadruple .span4,
+.layout-group.quadruple .layout-box.span4,
+.layout-group.double .double .layout-box,
+.layout-group.double .triple .layout-box,
+.layout-group.double .single .layout-box,
+.layout-group.triple .double .layout-box,
+.layout-group.triple .triple .layout-box,
+.layout-group.triple .triple .layout-box.span2,
+.layout-group.triple .single .layout-box {
+    width:100%;
+}
+.layout-group.triple .span2 .double .layout-box,
+.layout-group.quadruple .layout-box,
+.layout-group.quadruple .span2,
+.layout-group.quadruple .span3 {
+    width:50%;
+}
+.layout-group.quadruple .span1.force-width {
+    width:25%;
+}
+.layout-group.triple .layout-box .single .triple .layout-box,
+.layout-group.triple .span2 .triple .layout-box,
+.layout-group.triple .span1.force-width {
+	width:33.3333%;
+}
+.layout-group.triple .layout-box .single .triple .layout-box.span2,
+.layout-group.triple .span2 .triple .layout-box.span2 {
+	width:66.6666%;
+}
+.layout-group.quadruple .span3.force-width {
+	width:75%;
 }
 
 /* Nesting */
 .layout-group.quadruple .span2,
 .layout-group.double .double .layout-box {
-	width:50%;
+    width:50%;
+}
+.layout-group.double .triple .layout-box {
+    width:33.3333%;
 }
 
-.layout-group.double .triple .layout-box {
-	width:33.3333%;
-}
 .layout-group.double .triple .layout-box.span2 {
-	width:66.6666%;
+    width:66.6666%;
 }
 .layout-group.triple .layout-box .single .triple .layout-box,
 .layout-group.triple .layout-box .single .triple .layout-box.span2 {
-	/*width:100%;*/
+    /*width:100%;*/
 }
 
 
 .layout-group.quadruple > .layout-box:nth-of-type(2n+3) { /* 3, 5, 7, 9, ... */
-	clear:none;
+    clear:none;
 }
 .layout-group.quadruple > .layout-box:nth-of-type(5n) { /* 5, 10, 15, ... */
-	clear:left;
+    clear:left;
 }
 
 .layout-group.layout-combo > .layout-box,
 .layout-group.double.layout-combo > .layout-box, 
 .layout-group.triple.layout-combo > .layout-box, 
 .layout-group.quadruple.layout-combo > .layout-box {
-	clear:none;
+    clear:none;
 }
 /* END new layout pattern test */
 
@@ -815,7 +863,13 @@ orange  |  red  |  lightblue  |  green
     font-size: 1.4em;
 }
 
-
+.stretch-y {
+    bottom: 0;
+    overflow: hidden;
+    position: absolute;
+    right: 1.2rem;
+    top: 0;
+}
 
 
 /* BEGIN event timestamps */

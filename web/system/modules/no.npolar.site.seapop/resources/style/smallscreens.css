@@ -142,7 +142,7 @@
 .portal .news-list .news:nth-child(odd) {
 	margin-left:0;
         margin-right:0;
-	clear:left;
+	/*clear:left;*/
 	/*border-bottom:10px solid orange;*/
 }
 /* Remove right margin on boxes to the far right */
@@ -219,71 +219,33 @@ nav .pageNumWrap {
 
 
 /* New layout pattern test */
+
 .layout-group.double .layout-box,
 .layout-group.quadruple .layout-box,
-.layout-group.quadruple .layout-box {
-	width:50%;
-	float:left;
-}
 .layout-group.triple .layout-box {
-	width:33.333%;
-	float:left;
+    width:50%;
+    float:left;
 }
-.layout-group.triple .span2 {
-	width:66.666%;
-	float:left;
+.layout-group.triple .layout-box:first-child,
+.layout-group.triple .layout-box.span2 + .layout-box,
+.layout-group.single .layout-box {
+    width:100%;
 }
-
-.layout-group.triple > .layout-box:nth-of-type(3n+4), /* 4, 7, 10, ...*/
-.layout-group.double > .layout-box:nth-of-type(2n+3), /* 3, 5, 7, 9, ... */
-.layout-group.quadruple > .layout-box:nth-of-type(2n+3) { /* 3, 5, 7, 9, ... */
-	clear:left;
+.layout-group.double .layout-box:nth-child(2n+1):not(.featured-box),
+.layout-group.quadruple .layout-box:nth-child(4n+1):not(.featured-box) { /* :nth-child(odd) */
+    padding-right:0.25em;
 }
-.layout-group.layout-combo > .layout-box,
-.layout-group.double.layout-combo > .layout-box, 
-.layout-group.triple.layout-combo > .layout-box, 
-.layout-group.quadruple.layout-combo > .layout-box {
-	clear:none;
+.layout-group.double .layout-box:nth-child(2n):not(.featured-box),
+.layout-group.quadruple .layout-box:nth-child(4n):not(.featured-box) { /* :nth-child(even) */
+    padding-left:0.25em;
 }
-
-/* Combos and nesting */
-.layout-group.single .layout-box,
-.layout-group.double .span2,
-.layout-group.double .layout-box.span2,
-.layout-group.triple .span3,
-.layout-group.triple .layout-box.span3,
-.layout-group.quadruple .span3,
-.layout-group.quadruple .span4,
-.layout-group.quadruple .layout-box.span4,
-.layout-group.double .double .layout-box,
-.layout-group.double .triple .layout-box,
-.layout-group.double .single .layout-box,
-.layout-group.triple .double .layout-box,
-.layout-group.triple .triple .layout-box,
-.layout-group.triple .triple .layout-box.span2,
-.layout-group.triple .single .layout-box {
-	width:100%;
+.card-h .card-image-wrapper {
+    width:33.333%;
+    float:left;
 }
-.layout-group.triple .span2 .double .layout-box,
-.layout-group.quadruple .layout-box,
-.layout-group.quadruple .span2,
-.layout-group.quadruple .span3 {
-	width:50%;
-}
-.layout-group.quadruple .span1.force-width {
-	width:25%;
-}
-.layout-group.triple .layout-box .single .triple .layout-box,
-.layout-group.triple .span2 .triple .layout-box,
-.layout-group.triple .span1.force-width {
-	width:33.3333%;
-}
-.layout-group.triple .layout-box .single .triple .layout-box.span2,
-.layout-group.triple .span2 .triple .layout-box.span2 {
-	width:66.6666%;
-}
-.layout-group.quadruple .span3.force-width {
-	width:75%;
+.card-h .card-text {
+    width:66.666%;
+    float:left;
 }
 }
 
