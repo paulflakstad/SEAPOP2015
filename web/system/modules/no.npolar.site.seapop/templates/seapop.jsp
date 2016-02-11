@@ -468,6 +468,40 @@ $(document).ready(function() {
         // Fallback to .png logo
         $('#identity-image').attr({ src : $('#identity-image').attr('src').replace('.svg', '.png') });
     }
+    
+    // BEGIN location overlays
+    // Goal: Open location details (fetched from the same page) in an overlay 
+    // when the user clicks a location on the SEATRACK locations map.
+    // 
+    // Add full-screen overlay container (initially hidden, see rules in base.css)
+    $('body').append('<div class="overlay overlay--full-screen fadein">'
+                        + '<div class="overlay-dialog fadein running-text" id="overlay-dialog">'
+                            + '<p>Loading...</p>'
+                        + '</div>'
+                    + '</div>');
+    // When the user clicks on a linked area in the locations map, show that
+    // location's details - fetched from the same page - in an overlay dialog
+    $("#locations-linkmap area").click(function(event) {
+        event.preventDefault();
+        // adding this class is what makes the dialog visible
+        $('html').addClass('overlay-open');
+        // get jQuery objects for location heading and content from the same page
+        var locationContent = $('' + $(event.target).attr('href')); // => e.g. $('' + '#some-location')
+        var locationHeading = locationContent.parent().find('.toggletrigger h2');
+        $('#overlay-dialog').html( '<h2 class="overlay-dialog_heading">' + locationHeading.text() + '</h2>' + locationContent.html() );
+    });
+    // Make sure it is possible to dismiss the overlay
+    $(document).click(function(event) {
+	if ($(event.target).closest('.overlay--full-screen').length) {
+            // => full-screen overlay was active when the click occured
+            if ( !$(event.target).closest('#overlay-dialog').length && !$(event.target).is('#overlay-dialog')) {
+                // => click occured outside the dialog
+                // => deactivate the overlay
+                $('html').removeClass('overlay-open');            
+            }
+        }
+    });
+    // END location overlays
 });
 
 // Moved to commons.js:
