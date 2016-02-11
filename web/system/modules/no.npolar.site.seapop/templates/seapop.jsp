@@ -475,7 +475,7 @@ $(document).ready(function() {
     // 
     // Add full-screen overlay container (initially hidden, see rules in base.css)
     $('body').append('<div class="overlay overlay--full-screen fadein">'
-                        + '<div class="overlay-dialog fadein running-text" id="overlay-dialog">'
+                        + '<div class="overlay-dialog fadein" id="overlay-dialog">'
                             + '<p>Loading...</p>'
                         + '</div>'
                     + '</div>');
@@ -488,7 +488,8 @@ $(document).ready(function() {
         // get jQuery objects for location heading and content from the same page
         var locationContent = $('' + $(event.target).attr('href')); // => e.g. $('' + '#some-location')
         var locationHeading = locationContent.parent().find('.toggletrigger h2');
-        $('#overlay-dialog').html( '<h2 class="overlay-dialog_heading">' + locationHeading.text() + '</h2>' + locationContent.html() );
+        $('#overlay-dialog').html('<h2 class="overlay-dialog_heading">' + locationHeading.text() + '</h2>' 
+                                + '<div class="overlay-dialog_content running-text">' + locationContent.html() + '</div>');
     });
     // Make sure it is possible to dismiss the overlay
     $(document).click(function(event) {
