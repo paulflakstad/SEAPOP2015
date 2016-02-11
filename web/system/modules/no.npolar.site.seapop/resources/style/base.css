@@ -72,6 +72,8 @@ dd,
 li,
 h1,h2,h3,h4,h5,h6,
 .cta-huge,
+.media,
+.textbox,
 nav.pagination {
     display:block;
     padding:0;
@@ -347,10 +349,15 @@ p,
     margin:0 0 1em;
 }
 .paragraph ol,
-.paragraph ul {
+.paragraph ul,
+.running-text ol, 
+.running-text ul {
     padding-left:2.5em;
+    margin-top:0.5em;
+    margin-bottom:0.5em;
 }
-.paragraph li {
+.paragraph li,
+.running-text li {
     display:list-item;
 }
 aside.reference {
@@ -457,25 +464,38 @@ ul.line-items li {
 }
 
 /* Accordion */
+.toggleable {
+    background-color:#f5f5f5;
+    padding:0.5em;
+}
 .toggletrigger,
 .toggletarget {
     padding:0 1%;
 	margin-bottom:0.2rem;
 }
 .toggletrigger {
-    background:#f5f5f5;
+    background-color:inherit;
     cursor:pointer;
     margin-bottom:0 !important;
 	display:block;
 	color:#1570B1;
 	transition:all .5s;
+    text-decoration:none;
 }
-.toggletrigger:hover {
-	background:#eee;
-	box-shadow:0 0 10em rgba(0,0,0,0.08) inset;
+.toggletrigger:hover,
+/*.toggletrigger:focus,*/
+.toggletrigger[aria-expanded="true"] {
+    background:#eee;
+    box-shadow:0 0 10em rgba(0,0,0,0.08) inset;
+}
+.toggletrigger[aria-expanded="true"] {
+    /*border:1px solid #bbb;
+    border-bottom:none;*/
+    
 }
 .toggletarget {
-    border:1px solid #f5f5f5;
+    border:1px solid #dfdfdf;
+    background-color:#fff;
 	padding:1em;
 }
 .toggletarget > ul > li:last-child {
@@ -515,8 +535,11 @@ ul.line-items li {
     opacity:1;
     visibility:visible;
     overflow:auto;
+    overflow-y:hidden;
     padding:1em;
     margin-bottom:0.2rem;
+    /*border:1px solid #bbb;
+    border-top:none;*/
     -webkit-transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease;
     -moz-transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease;
     -o-transition: padding 0.5s ease, max-height 1s ease-in, opacity 0.5s ease, visibility 0.5s ease;
@@ -738,6 +761,19 @@ h1 .scientific-name {
 .secondary {
     background-color:#f5f5f5;
 }
+/* "High contrast" wrapper */
+.standout {
+    background-color: #293f5c;
+    padding: 1em;
+    text-align: center;
+}
+.standout,
+.standout * {
+    color: #d3dfee;
+}
+.standout a {
+    color:#fff;
+}
 
 .byline,
 .secondary,
@@ -854,10 +890,10 @@ h1 .scientific-name {
 .paragraph .media,
 .paragraph .textbox,
 #pageindex {
-    width:98.5%;
+    /*width:98.5%;*/
     background-color:#f5f5f5;
     border:none;
-    padding:0.75%;
+    padding:0.75em;
     font-size:0.85em;
     color:#444;
     margin:0 0 1em 0; /* Maybe some side margin would be good? (e.g. 5%) */
@@ -1346,6 +1382,59 @@ h4.news-title {
     position:static;
 }
 
+/* Full-screen overlay with dialog on top */
+.overlay-open .overlay--full-screen {
+    display:block;
+    visibility:visible;
+}
+.overlay--full-screen {
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow:hidden;
+    overflow-y:scroll;
+    z-index:999;
+    display:none;
+    visibility:hidden;
+}
+.overlay-dialog {
+    height:70%;
+    width:70%;
+    max-width:840px;
+    margin:auto;
+    position:fixed;
+    background-color:#fff;
+    color:#000;
+    top: 0; left: 2em; bottom:0; right: 2em;
+    padding:1em;
+    overflow:auto;
+    overflow-x:hidden;
+    box-shadow:0 0 1em rgba(0,0,0,1);
+}
+.overlay-dialog_heading {
+    background-color: #3a68a6;
+    color: #fff;
+    margin-bottom: 1em;
+    margin-left: -1em;
+    margin-top: -1em;
+    padding: 0.75em 1em 0.25em;
+    width: calc(100% + 2em);
+}
+.cssanimations .fadein {
+    opacity:0;
+}
+.cssanimations .overlay--full-screen.fadein {
+    animation:fadein 0.2s forwards;
+}
+.cssanimations .overlay-dialog.fadein {
+    animation:fadein 0.3s forwards 0.2s;
+}
+html.overlay-open { /* any full-screen overlay should toggle this class */
+    /*position:fixed;*/
+    overflow:hidden; /* disables scrolling on main page */
+}
 
 
 
@@ -2041,6 +2130,16 @@ nav .pageNumWrap {
     background-color:#284e81;
     color:#fff;
 }
+/* Button */
+.cta--button,
+.layout-group .cta.cta--inline-button {
+    clear: both;
+    display: inline-block;
+    float: none;
+    margin: 1em auto 0.2em;
+    padding: 0.75em 2em;
+    width: auto;
+}
 /* Alternative (secondary) call-to-action links */
 /*a*/.cta.alt {
     background-color:#0092c7;
@@ -2226,7 +2325,8 @@ nav.pagination a {
 }
 
 .portal section .section-heading,
-.portal section .portal-box-heading {
+.portal section .portal-box-heading,
+.layout-box_heading {
     background-color:#bd4422;
     color:#fff;
     padding:0.5em;
@@ -2262,7 +2362,8 @@ nav.pagination a {
 
 
 .portal-box h3.portal-box-heading,
-.portal section .portal-box-heading {
+.portal section .portal-box-heading,
+.layout-box_heading {
     /*color:#fff;
     display:block;
     font-size:1.35em;
@@ -2434,8 +2535,9 @@ a:hover .portal-box-heading.bluebar-dark {
 .featured-box > a,
 .portal-box > a,
 a.featured-link {
-	display:block;
-	position:relative;
+    display:block;
+    clear:both;
+    position:relative;
 }
 .featured-box > a:hover,
 .portal-box > a:hover,
