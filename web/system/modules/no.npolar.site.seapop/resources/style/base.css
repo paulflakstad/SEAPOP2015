@@ -3066,6 +3066,27 @@ th.species-data-head-timing,
     }
 /*}*/
 
+.cardlist .card_media,
+.cardlist .card_text {
+    display:table-cell;
+    vertical-align:middle;
+    padding:0.5em;
+}
+.cardlist .card_media {
+    width:100px;
+    height:60px;
+}
+.cardlist .card_text {
+}
+.cardlist .card_media img {
+    max-height:60px;
+    max-width:100px;
+    margin:0 auto;
+}
+.cardlist .card_link {
+    display:block;
+}
+
 /* Hide byline (this was requested) */
 .byline {
     display:none;
