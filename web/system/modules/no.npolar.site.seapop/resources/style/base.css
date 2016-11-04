@@ -3141,6 +3141,9 @@ th.species-data-head-timing,
 .qtip {
     box-shadow: 1px 1px 6px #222 !important;
 }
+.cartodb-logo {
+    z-index: 990 !important;
+}
 /*
 .qtip-light {
 }

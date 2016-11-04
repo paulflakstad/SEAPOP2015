@@ -582,6 +582,89 @@ $(document).ready(function() {
         }
     });
     // END location overlays
+    
+    // BEGIN Map of locations (on SEATRACK home page)
+    // Load Carto assets and setup map, if neccessary
+    var cartoMapId = 'map--locations';
+    if ($('#'+cartoMapId)) {
+        $('head').append('<link rel="stylesheet" type="text/css" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />');
+        $.getScript('http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js', function() {
+            
+            // Create map with initial view
+            var map = new L.Map(cartoMapId, {
+                center: [57, 4],
+                zoom: 4,
+                scrollWheelZoom: false
+            });
+
+            map.attributionControl.setPrefix('SEATRACK');
+
+            // Add basemap
+            L.tileLayer('http://geodata.npolar.no/arcgis/rest/services/Basisdata_Intern/NP_Verden_WMTS_53032/MapServer/tile/{z}/{y}/{x}').addTo(map);
+
+            // Add the locations
+            cartodb.createLayer(map, {
+                user_name: 'seatrack',
+                type: 'cartodb',
+                sublayers: [{
+                    sql: 'SELECT cartodb_id, ST_Transform(the_geom, 53032) AS the_geom_webmercator, colony, international_name FROM colonies',
+                    cartocss: '#colony{ marker-fill-opacity: 1;marker-line-color: #000000;marker-line-width: 1.5;marker-line-opacity: 1;marker-placement: point;marker-type: ellipse;marker-width: 10;marker-fill: #F11810;marker-allow-overlap: true; }',
+                    interactivity: "cartodb_id,colony,international_name"
+                }]
+            }).addTo(map).on('done', function(layer) {
+                
+                layer.setInteraction(true);
+
+                layer.on('featureClick', function(evt, latlng, pos, data, layer) {
+                    try { ga('send', 'event', 'Map interactions', 'clicked SEATRACK location', data.colony); } catch(ignore) {}
+                    console.log('Map click on location [' + data.cartodb_id + ' ' + data.colony + ']');
+                    var descrId = data.international_name.toLowerCase().replace(' and ', '-').replace(/ /g, '-');
+                    descrId = descrId.replace('&', '-');
+                    console.log('Opening modal, passing ID [' + descrId + '] - based on [' + data.cartodb_id + ' ' + data.international_name + ']');
+                    showLocationModal(descrId);
+                });
+                
+                layer.on('featureOver', function(e, latlng, pos, data, subLayerIndex) {
+                    console.log("mouse over " + data.colony);
+                    map.getContainer().style.cursor = 'pointer';
+                    /*
+                    //var tooltip = layer.getSubLayer(subLayerIndex).leafletMap.viz.addOverlay({
+                    var tooltip = layer.leafletMap.viz.addOverlay({
+                    //layer.getSubLayer(0).addOverlay({
+                        layer: layer.getSubLayer(subLayerIndex),
+                        type: 'tooltip',
+                        template: '<p>Testing</p>',
+                        //template: '<p>{{data.colony}}</p>',
+                        width: 200,
+                        position: top
+                    });
+                    $('body').append(tooltip.render().el);
+                    //*/
+                });
+                
+                // Change cursor to indicate interactivity
+                layer.on('mouseover', function() {
+                    map.getContainer().style.cursor = 'pointer';
+                });
+
+                layer.on('mouseout', function() {
+                    map.getContainer().style.cursor = 'auto';
+                });
+
+            });
+            
+            
+            // Toggle scroll wheel zooming, require clicked map
+            map.on('click', function() {
+                if (map.scrollWheelZoom.enabled()) {
+                    map.scrollWheelZoom.disable();
+                } else {
+                    map.scrollWheelZoom.enable();
+                }
+            });
+        });
+    }
+    // END Map of locations
 });
 
 // Moved to commons.js:
