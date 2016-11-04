@@ -7,7 +7,7 @@
 <%
 CmsAgent cms = new CmsAgent(pageContext, request, response);
 
-final String URI_WIDGET_IMAGE = "/images/figures-and-maps/rangifer-4156c.png";//"/images/figures-and-maps/toppskarv-arealbruk-GPS-sklinna.jpg";
+final String URI_WIDGET_IMAGE = "/images/figures-and-maps/seatrack-visualization-app.png";//"/images/figures-and-maps/toppskarv-arealbruk-GPS-sklinna.jpg";
 final String URI_SEATRACK_LOGO = "/images/logos/SEATRACK-logo-draft-67.png";
 %>
 <div style="width: 700px; max-width: 100%; margin: 0px auto;">
