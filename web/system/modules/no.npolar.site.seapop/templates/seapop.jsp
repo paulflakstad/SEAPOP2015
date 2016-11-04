@@ -431,6 +431,82 @@ WebFont.load({
         families: ['Old Standard TT', 'Open Sans', 'Droid Sans', 'Droid Serif']
     }
 });
+/*
+ * Displays a location description in a modal container.
+ * 
+ * The location description must be on the same page and is identified by the
+ * given location ID.
+ * 
+ * @param {type} locationId
+ * @returns {undefined}
+ */
+function showLocationModal(/*String*/locationId) {
+    if (locationId === 'undefined') {
+        console.log("Attempted to show a location modal, but location ID was undefined.");
+        return null;
+    }
+    if (locationId.substring(0,1) === '#') {
+        locationId = locationId.substring(1);
+    }
+    // get jQuery objects for location heading and content from the same page
+    var locationContent = $('#' + locationId); // => e.g. $('#' + 'Alkefjellet')
+    var locationHeading = locationContent.parent().find('.toggletrigger h2');
+    showModal(locationHeading.text(), locationContent.html());
+    /*
+    // adding this class is what makes the dialog visible
+    $('html').addClass('overlay-open');
+    // get jQuery objects for location heading and content from the same page
+    var locationContent = $('#' + locationId); // => e.g. $('#' + 'Alkefjellet')
+    var locationHeading = locationContent.parent().find('.toggletrigger h2');
+    $('#overlay-dialog').html('<h2 class="overlay-dialog_heading">' + locationHeading.text() + '</h2>' 
+        + '<div class="overlay-dialog_content running-text">' + locationContent.html() + '</div>'
+        + '<button class="overlay-dialog__close"><span class=\"hidden\">Close</span></button>');
+    $('.overlay-dialog__close').click(function() {
+        hideModal();
+    });
+    //*/
+}
+/*
+ * Opens a modal overlay dialog.
+ * 
+ * @param {type} heading
+ * @param {type} content
+ * @returns {undefined}
+ */
+function showModal(/*String*/heading, /*String*/content) {
+    $('#overlay-dialog').html('<h2 class="overlay-dialog_heading">' + heading + '</h2>' 
+        + '<div class="overlay-dialog_content running-text">' + content + '</div>'
+        + '<button class="overlay-dialog__close"><span class=\"hidden\">Close</span></button>');
+    
+    // adding this class makes the dialog appear
+    $('html').addClass('overlay-open');
+    
+    // should add routine here that ensures tabbing is limited to the dialog
+    
+    // Bind closers
+    $('.overlay-dialog__close').click(function() {
+        hideModal();
+    });
+    $(document).keyup(function(e) {
+     if (e.keyCode === 27) { // escape key
+        hideModal();
+    }
+});
+    
+}
+/*
+ * Hides a modal dialog.
+ * 
+ * The location description must be on the same page and is identified by the
+ * given location ID.
+ * 
+ * @param {type} locationId
+ * @returns {undefined}
+ */
+function hideModal() {
+    // removing this class makes the dialog disappear
+    $('html').removeClass('overlay-open');
+}
 
 $(document).ready(function() {
     // Prepare Highslide (if necessary)
@@ -483,6 +559,8 @@ $(document).ready(function() {
     // location's details - fetched from the same page - in an overlay dialog
     $("#locations-linkmap area").click(function(event) {
         event.preventDefault();
+        showLocationModal($(event.target).attr('href'));
+        /*// Code below moved to function: showLocationModal(string)
         // adding this class is what makes the dialog visible
         $('html').addClass('overlay-open');
         // get jQuery objects for location heading and content from the same page
@@ -490,6 +568,7 @@ $(document).ready(function() {
         var locationHeading = locationContent.parent().find('.toggletrigger h2');
         $('#overlay-dialog').html('<h2 class="overlay-dialog_heading">' + locationHeading.text() + '</h2>' 
                                 + '<div class="overlay-dialog_content running-text">' + locationContent.html() + '</div>');
+        //*/
     });
     // Make sure it is possible to dismiss the overlay
     $(document).click(function(event) {
@@ -498,7 +577,7 @@ $(document).ready(function() {
             if ( !$(event.target).closest('#overlay-dialog').length && !$(event.target).is('#overlay-dialog')) {
                 // => click occured outside the dialog
                 // => deactivate the overlay
-                $('html').removeClass('overlay-open');            
+                $('html').removeClass('overlay-open');       
             }
         }
     });

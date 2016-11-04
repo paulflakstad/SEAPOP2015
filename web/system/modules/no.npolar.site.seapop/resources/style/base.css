@@ -1391,8 +1391,8 @@ h4.news-title {
     color:#fff;
     top:auto;
     right:0;
-    background:#333;
-    background:rgba(0,0,0,0.7);
+    background-color:#333;
+    background-color:rgba(0,0,0,0.85);
     bottom:0;
 }
 .ingress.overlay {
@@ -1413,7 +1413,7 @@ h4.news-title {
     right:0;
     overflow:hidden;
     /*overflow-y:scroll;*/
-    z-index:999;
+    z-index:1000;
     display:none;
     visibility:hidden;
     /*width:100%;
@@ -1433,10 +1433,29 @@ h4.news-title {
     overflow-x:hidden;
     box-shadow:0 0 1em rgba(0,0,0,1);*/
     margin:2% auto;
-    max-width:70%;
+    max-width:90%;
     position:relative;
     width:840px;
     height:100%;
+}
+.overlay-dialog__close {
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: large;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    z-index: 99999;
+}
+.overlay-dialog__close:after {
+    content: "X";
 }
 .overlay-dialog_heading {
     /*background-color: #3a68a6;
@@ -1455,10 +1474,12 @@ h4.news-title {
 }
 .overlay-dialog_content {
     background-color:#fff;
-    box-shadow:0 0 12em rgba(0, 0, 0, 1);
+    /*box-shadow:0 0 12em rgba(0, 0, 0, 1);*/
     color:#000;
     height:840px;
+    height: 80vh;
     max-height:80%;
+    max-height:80vh;
     overflow:auto;
     padding:1em;
     font-size:small;
