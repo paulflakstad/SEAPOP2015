@@ -1187,6 +1187,17 @@ a.breadcrumb*/ {
     margin:0;
     font-size:1em;
 }
+.caption__title {
+    font-size: 1em;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: inline-block;
+    width: auto;
+    padding-right: 0.6em;
+}
+.caption__text {
+    display: inline;
+}
 .gallerythumb {
     background:transparent;
 }
