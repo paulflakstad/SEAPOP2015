@@ -12,6 +12,45 @@
 /** Global variable used to detect changes in the viewport width. */
 var lastDetectedWidth = $(window).width();
 
+var SPECIES = {
+    alca_torda : "Razorbill", // Alke
+    alle_alle : "Little auk", // Alkekonge
+    cepphus_grylle : "Black guillemot", // Teist
+    chroicocephalus_ridibundus : "Black-headed gull", // Hettemåke
+    clangula_hyemalis : "Long-tailed duck", // Havelle
+    fratercula_arctica : "Atlantic puffin", // Lunde
+    fulmarus_glacialis : "Northern fulmar", // Havhest
+    gavia_adamsii : "Yellow-billed loon", // Gulnebblom
+    gavia_arctica : "Arctic loon", // Storlom
+    gavia_immer : "Common loon", // Islom
+    gavia_stellata : "Red-throated loon", // Smålom
+    larus_argentatus : "Herring gull", // Gråmåke
+    larus_canus : "Common gull", // Fiskemåke
+    larus_fuscus : "Lesser black-backed gull", // Sildemåke
+    larus_hyperboreus : "Glaucous gull", // Polarmåke
+    larus_marinus : "Great black-backed gull", // Svartbak
+    melanitta_fusca : "Velvet scoter", // Sjøorre
+    melanitta_nigra : "Common scoter", // Svartand
+    mergus_serrator : "Red-breasted merganser", // Siland
+    morus_bassanus : "Northern gannet", // Havsule
+    pagophila_eburnea : "Ivory gull", // Ismåke
+    phalacrocorax_aristotelis : "European shag", // Toppskarv
+    phalacrocorax_carbo : "Great cormorant", // Storskarv
+    podiceps_grisegena : "Red-necked grebe", // Gråstrupedykker
+    polysticta_stelleri : "Steller's eider", // Stellerand
+    rissa_tridactyla : "Black-legged kittiwake", // Krykkje
+    somateria_mollissima : "Common eider", // Ærfugl
+    somateria_spectabilis : "King eider", // Praktærfugl
+    stercorarius_longicaudus : "Long-tailed jaeger", // Fjelljo
+    stercorarius_parasiticus : "Parasitic jaeger", // Tyvjo
+    stercorarius_skua : "Great skua", // Storjo
+    sterna_hirundo : "Common tern", // Makrellterne
+    sterna_paradisaea : "Arctic tern", // Rødnebbterne
+    uria_aalge : "Common guillemot", // Lomvi
+    uria_lomvia : "Brünnich's guillemot", // Polarlomvi
+    xema_sabini : "Sabine's gull" // Sabinemåke
+};
+
 /**
  * Global variable that holds localized Highslide strings / labels. 
  */
@@ -881,6 +920,98 @@ function initUserControls() {
     }
 }
 
+function toCommonName(scientificName) {
+    'use strict';
+    var cn = SPECIES[scientificName.toLowerCase().replace(/ /g,"_")];
+    
+    if (typeof cn === 'undefined' || cn.length <= 0) {
+        return scientificName;
+    }
+    
+    return cn;
+}
+
+function autoSpecies() {
+    'use strict';
+    var autoSpecies = $('.auto-species');
+    if (autoSpecies[0]) {
+        autoSpecies.each(function() {
+            getSpeciesByColony($(this));
+        });
+    }
+}
+
+function getSpeciesByColony(/*jQuery*/container) {
+    'use strict';
+    var colony = container.attr('data-location');
+    var apiUrl = 'https://api.npolar.no/tracking/seabird?filter-geometry.type=Point&size-facet=99&limit=0&facets=species&filter-colony=' + colony;
+    var items = [];
+    $.getJSON(apiUrl, function(data) {
+        
+        //var commonName = data.feed.entries[0].properties.object;
+        
+        //console.log("Common name: " + commonName);
+        
+        // Weak point: 'species' is currently always the first facet set when 
+        // the URL uses "facets=species" - but that might change...
+        $.each(data.feed.facets[0].species, function(key, val) {
+            var mapUri = 'https://data.npolar.no/tracking/seabird?technology=gls&species=' + this.term + '&colony=' + colony;
+            items.push('<li><a href="' + mapUri + '" target="_blank"><em>' + toCommonName(this.term) + ' (' + this.term + ')</em></a></li>');
+        });
+    }).done(function() {
+        container.html('');
+        //console.log('items.length is ' + items.length);
+        if (items.length === 0) {
+            items.push('<li><em>No species data for ' + colony + ' available yet</em></li>');
+        }
+        $('<ul/>', {
+        "class": "auto-species-list",
+        html: items.join("")
+        }).appendTo(container);
+    }).fail(function() {
+        container.html('<em>Loading species list failed!</em>');
+    });
+}
+
+function autoColonies() {
+    'use strict';
+    var autoColonies = $('.auto-colonies');
+    if (autoColonies[0]) {
+        autoColonies.each(function() {
+            getColoniesBySpecies($(this));
+        });
+    }
+}
+
+function getColoniesBySpecies(/*jQuery*/container) {
+    'use strict';
+    var species = container.attr('data-species');
+    //var apiUrl = 'https://api.npolar.no/tracking/seabird?filter-geometry.type=Point&size-facet=99&limit=1&facets=species&filter-colony=' + colony;
+    var apiUrl = 'https://api.npolar.no/tracking/seabird?filter-geometry.type=Point&size-facet=99&limit=0&facets=colony&filter-species=' + species;
+    //console.log('querying ' + apiUrl);
+    var items = [];
+    $.getJSON(apiUrl, function(data) {
+        // Weak point: 'colony' is currently always the first facet set when 
+        // the URL uses "facets=colony" - but that might change...
+        $.each(data.feed.facets[0].colony, function(key, val) {
+            var mapUri = 'https://data.npolar.no/tracking/seabird?technology=gls&colony=' + this.term + '&species=' + species;
+            items.push('<li><a href="' + mapUri + '" target="_blank"><em>' + this.term + '</em></a></li>');
+        });
+    }).done(function() {
+        container.html('');
+        //console.log('items.length is ' + items.length);
+        if (items.length === 0) {
+            items.push('<li><em>No colony data for ' + toCommonName(species) + ' (' + species + ') available yet</em></li>');
+        }
+        $('<ul/>', {
+        "class": "auto-colony-list",
+        html: items.join("")
+        }).appendTo(container);
+    }).fail(function() {
+        container.html('<em>Loading colony list failed!</em>');
+    });
+}
+
 /**
  * Things to do when the document is ready
  */
@@ -917,6 +1048,9 @@ $(document).ready( function() {
     
     // Invoke the layout handler
     layItOut();
+    
+    autoSpecies();
+    autoColonies();
 
     // Invoke the layout handler again whenever the viewport width changes
     $(window).resize(function() {
