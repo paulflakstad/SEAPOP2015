@@ -7,6 +7,7 @@
 --%>
 <%@ page import="no.npolar.util.*,
                  no.npolar.util.contentnotation.*,
+                 java.net.URLEncoder,
                  java.util.*,
                  java.util.regex.*,
                  java.io.IOException,
@@ -278,6 +279,47 @@ try {
         // Get the paragraph title and text
         title   = cms.contentshow(paragraphs, "Title").replaceAll(" & ", " &amp; ");
         text    = cms.contentshow(paragraphs, "Text");
+        
+        
+        // BEGIN Customization for SEATRACK: Locations automated
+        String locationName = title;
+        if (locationName.contains("[")) {
+            // The location name is typically the same as the title, but we
+            // accomodate "overriding" by allowing editors to specify a 
+            // custom API location name. It must appear at the end of the title, 
+            // wrapped in square braces. E.g. "Hornøya island, Norway [Hornøya]"
+            title = title.substring(0, title.indexOf("[")).trim();
+            int lnStart = locationName.indexOf("[") + 1;
+            locationName = locationName.substring(lnStart);
+            locationName = locationName.substring(0, locationName.indexOf("]"));
+        }
+        // now replace the placeholder "code" with a div that later can be 
+        // populated using javascript
+        text = text.replace(
+                "<p>[auto-species]</p>", 
+                "<div class=\"auto-species\" data-location=\"" + locationName + "\">"
+                    + "Loading species&hellip;" +
+                "</div>"
+        );
+        
+        String speciesName = "Undefined species";
+        try {
+            speciesName = (String)request.getAttribute("pageTitle");
+            if (speciesName.contains("<em>")) {
+                speciesName = speciesName.substring(speciesName.indexOf("<em"));
+                speciesName = speciesName.substring(speciesName.indexOf(">")+1);
+                speciesName = speciesName.substring(0, speciesName.indexOf("</em>"));
+            }
+        } catch (Exception e) { }
+        text = text.replace(
+                "<p>[auto-colonies]</p>", 
+                "<div class=\"auto-colonies\" data-species=\"" + speciesName + "\">"
+                    + "Loading colonies&hellip;" +
+                "</div>"
+        );
+        
+        //final String REGEX_PATTERN = "\\[location \\s+(" + no.npolar.util.contentnotation.ContentNotation.REGEX_PATTERN_ATTRIBS + "\\s+)+/\\]";
+        // END customization
 
         // Print the paragraph title
         if (CmsAgent.elementExists(title)) {
@@ -290,7 +332,22 @@ try {
             if (!accordion) {
                 out.println("<" + paragraphHeadingWrapper + ">" + titleRes + "</" + paragraphHeadingWrapper + ">");
             } else {
-                String paragraphId = CmsHtmlExtractor.extractText(titleRes, "UTF-8").toLowerCase().replaceAll("\\s", "-").replaceAll("\\(|\\)|\\&|\\?|\\,|\\.", "");
+                locationName = locationName.replace("&amp;", "&"); // Ampersands were escaped above; change it back
+                out.println("<!-- original location name was '" + locationName + "' -->");
+                String paragraphId = CmsHtmlExtractor.extractText(locationName, "UTF-8")
+                                        .toLowerCase()
+                                        .replaceAll("\\s", "-")
+                                        .replaceAll("\\(|\\)|\\&|\\?|\\,|\\.", "")
+                                        .replaceAll("--", "-");
+                /*
+                String paragraphId = 
+                        !locationName.equals(title) 
+                            ?
+                            locationName = URLEncoder.encode(locationName, "utf-8") 
+                            :
+                            //locationName.replaceAll("\\s", "-")
+                            CmsHtmlExtractor.extractText(titleRes, "UTF-8").toLowerCase().replaceAll("\\s", "-").replaceAll("\\(|\\)|\\&|\\?|\\,|\\.", "");
+                //*/
                 //String paragraphId = "content-section-" + paragraphCounter;
                 out.println("<a class=\"toggletrigger\" aria-controls=\"" + paragraphId + "\" href=\"#" + paragraphId + "\" style=\"font-size:large; padding:0.2em;\">"
                         + "<" + paragraphHeadingWrapper + " style=\"display:inline; font-size:1em;\">" + titleRes + "</" + paragraphHeadingWrapper + ">"

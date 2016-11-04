@@ -68,6 +68,7 @@ final String PARAGRAPH_HANDLER = "/system/modules/no.npolar.common.pageelements/
                 
                 request.setAttribute("paragraphContainer", fileContainer);
                 request.setAttribute("paragraphHeadingWrapper", "h4");
+                request.setAttribute("pageTitle", cms.contentshow(fileContainer, "PageTitle"));
                 if (fileContainer != null) 
                     cms.includeAny(PARAGRAPH_HANDLER_STANDALONE); 
                 else 
