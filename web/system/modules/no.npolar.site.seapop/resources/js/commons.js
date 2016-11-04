@@ -1051,6 +1051,8 @@ $(document).ready( function() {
     
     autoSpecies();
     autoColonies();
+    
+    enableModalDialog();
 
     // Invoke the layout handler again whenever the viewport width changes
     $(window).resize(function() {
@@ -1065,6 +1067,197 @@ $(document).ready( function() {
         $("img[usemap]").rwdImageMaps();
     } catch (ignore) {}
 });
+
+/**
+ * Enables the modal dialog.
+ * 
+ * @returns {undefined}
+ */
+function enableModalDialog() {
+    var dialogId = 'overlay-dialog';
+    // Add full-screen overlay container (initially hidden, see rules in base.css)
+    $('body').append('<div class="overlay overlay--full-screen fadein">'
+                        + '<div class="overlay-dialog fadein" id="'+dialogId+'">'
+                            + '<p>Loading...</p>'
+                        + '</div>'
+                    + '</div>');
+    $(document).click(function(event) {
+	if ($(event.target).closest('.overlay--full-screen').length) {
+            // => full-screen overlay was active when the click occured
+            if ( !$(event.target).closest('#'+dialogId).length && !$(event.target).is('#'+dialogId)) {
+                // click occured outside the dialog
+                // => deactivate the overlay
+                $('html').removeClass('overlay-open');   
+            }
+        }
+    });
+}
+
+/**
+ * Opens a modal overlay dialog.
+ * 
+ * @param {type} heading
+ * @param {type} content
+ * @returns {undefined}
+ */
+function showModal(/*String*/heading, /*String*/content) {
+    $('#overlay-dialog').html('<h2 class="overlay-dialog_heading">' + heading + '</h2>' 
+        + '<div class="overlay-dialog_content running-text">' + content + '</div>'
+        + '<button class="overlay-dialog__close"><span class=\"hidden\">Close</span></button>');
+    
+    // adding this class makes the dialog appear
+    $('html').addClass('overlay-open');
+    
+    // ToDo: Add routine that ensures tabbing is limited to the dialog only
+    
+    // Bind closers (X button and ESC key)
+    $('.overlay-dialog__close').click(function() {
+        hideModal();
+    });
+    $(document).keyup(function(e) {
+        if (e.keyCode === 27) { // escape key
+            hideModal();
+        }
+    });
+}
+/**
+ * Hides a modal dialog.
+ * 
+ * @returns {undefined}
+ */
+function hideModal() {
+    // removing this class makes the dialog disappear
+    $('html').removeClass('overlay-open');
+}
+
+/**
+ * Displays a location description in a modal container.
+ * 
+ * The location description must be on the same page and is identified by the
+ * given location ID.
+ * 
+ * @param {type} locationId The ID attribute value (leading "#" is optional)
+ * @returns {undefined}
+ */
+function showLocationModal(/*String*/locationId) {
+    // Goal: Open location details (fetched from the same page) in an overlay 
+    // when the user clicks a location on the SEATRACK locations map.
+    if (locationId === 'undefined') {
+        console.log("Attempted to show a location modal, but location ID was undefined.");
+        return null;
+    }
+    if (locationId.substring(0,1) === '#') {
+        locationId = locationId.substring(1);
+    }
+    // get jQuery objects for location heading and content (from elements on the current page)
+    var locationContent = $('#' + locationId); // => e.g. $('#' + 'Alkefjellet')
+    var locationHeading = locationContent.parent().find('.toggletrigger h2');
+    
+    // Show the location in a modal
+    showModal(locationHeading.text(), locationContent.html());
+}
+
+/**
+ * Creates and sets up SEATRACK's locations map, if necessary.
+ * 
+ * The interactive map requires a block element with ID "map--locations".
+ * 
+ * @returns {undefined}
+ */
+function setupMapForSEATRACK() {
+    
+    // OLD VERSION (map as .png image with link map)
+    // When the user clicks on a linked area in the locations map, show that
+    // location's details - fetched from the same page - in an overlay dialog
+    if ($("#locations-linkmap area").length) {
+        $("#locations-linkmap area").click(function(event) {
+            event.preventDefault();
+            showLocationModal($(event.target).attr('href'));
+        });
+    }
+    
+    // NEW VERSION
+    // Interactive map
+    var cartoMapId = 'map--locations';
+    if ($('#'+cartoMapId).length) {
+        $('head').append('<link rel="stylesheet" type="text/css" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />');
+        $.getScript('http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js', function() {
+            
+            // Create map with initial view
+            var map = new L.Map(cartoMapId, {
+                center: [57, 4],
+                zoom: 4,
+                scrollWheelZoom: false
+            });
+
+            map.attributionControl.setPrefix('SEATRACK');
+
+            // Add basemap
+            L.tileLayer('http://geodata.npolar.no/arcgis/rest/services/Basisdata_Intern/NP_Verden_WMTS_53032/MapServer/tile/{z}/{y}/{x}').addTo(map);
+
+            // Add the locations
+            cartodb.createLayer(map, {
+                user_name: 'seatrack',
+                type: 'cartodb',
+                sublayers: [{
+                    sql: 'SELECT cartodb_id, ST_Transform(the_geom, 53032) AS the_geom_webmercator, colony, international_name FROM colonies',
+                    cartocss: '#colony{ marker-fill-opacity: 1;marker-line-color: #000000;marker-line-width: 1.5;marker-line-opacity: 1;marker-placement: point;marker-type: ellipse;marker-width: 10;marker-fill: #F11810;marker-allow-overlap: true; }',
+                    interactivity: "cartodb_id,colony,international_name"
+                }]
+            }).addTo(map).on('done', function(layer) {
+                
+                layer.setInteraction(true);
+
+                layer.on('featureClick', function(evt, latlng, pos, data, layer) {
+                    try { ga('send', 'event', 'Map interactions', 'clicked SEATRACK location', data.colony); } catch(ignore) {}
+                    console.log('Map click on location [' + data.cartodb_id + ' ' + data.colony + ']');
+                    var descrId = data.international_name.toLowerCase().replace(' and ', '-').replace(/ /g, '-');
+                    descrId = descrId.replace('&', '-');
+                    console.log('Opening modal, passing ID [' + descrId + '] - based on [' + data.cartodb_id + ' ' + data.international_name + ']');
+                    showLocationModal(descrId);
+                });
+                
+                layer.on('featureOver', function(e, latlng, pos, data, subLayerIndex) {
+                    console.log("mouse over " + data.colony);
+                    map.getContainer().style.cursor = 'pointer';
+                    /*
+                    //var tooltip = layer.getSubLayer(subLayerIndex).leafletMap.viz.addOverlay({
+                    var tooltip = layer.leafletMap.viz.addOverlay({
+                    //layer.getSubLayer(0).addOverlay({
+                        layer: layer.getSubLayer(subLayerIndex),
+                        type: 'tooltip',
+                        template: '<p>Testing</p>',
+                        //template: '<p>{{data.colony}}</p>',
+                        width: 200,
+                        position: top
+                    });
+                    $('body').append(tooltip.render().el);
+                    //*/
+                });
+                
+                // Change cursor to indicate interactivity
+                layer.on('mouseover', function() {
+                    map.getContainer().style.cursor = 'pointer';
+                });
+
+                layer.on('mouseout', function() {
+                    map.getContainer().style.cursor = 'auto';
+                });
+
+            });
+            
+            
+            // Toggle scroll wheel zooming, require clicked map
+            map.on('click', function() {
+                if (map.scrollWheelZoom.enabled()) {
+                    map.scrollWheelZoom.disable();
+                } else {
+                    map.scrollWheelZoom.enable();
+                }
+            });
+        });
+    }
+}
 
 
 /**
