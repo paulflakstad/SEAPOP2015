@@ -3191,6 +3191,17 @@ aside h4, .column.small h4, /* Rightside headings */
 }
 */
 
+.cta.cta-huge.cta-frontpage {
+    font-size: 1.5em;
+    margin: 0.4em 0;
+    padding: 0 0.2em;
+}
+.cta.cta-huge.cta-frontpage .cta-icon img {
+    width: 4em;
+    height: auto;
+    display: inline-block;
+    margin-top: .4em;
+}
 
 
 /* END OVERRIDES */
