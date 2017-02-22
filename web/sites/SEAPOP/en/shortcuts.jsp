@@ -22,9 +22,9 @@ final String PARAGRAPH_HANDLER_STANDALONE = "/system/modules/no.npolar.common.pa
 final String PARAGRAPH_HANDLER = "/system/modules/no.npolar.common.pageelements/elements/paragraphhandler.jsp";
 %>
 
-<div class="layout-group double">
-    <div class="layout-box" id="map--locations" style="width:100%; height:400px; height:50vh; min-height:400px;"></div>
-</div>
+<!--<div class="layout-group double">-->
+    <!--<div class="layout-box" id="map--locations" style="width:100%; height:400px; height:50vh; min-height:400px;"></div>-->
+<!--</div>-->
 
 <div class="layout-group double" id="locations-and-species">
     <section class="layout-box">
