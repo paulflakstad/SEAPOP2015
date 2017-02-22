@@ -85,7 +85,9 @@
                             sums[dataTypeTotals.size()]++; // Increment combined total (always at the "rightmost" position in the sums array)
                             String linkText = "";
                             if (dataType != null) {
-                                linkText = dataLink.getNumYears();
+                                // They changed their minds about displaying the
+                                // number in Jan 2017
+                                //linkText = dataLink.getNumYears();
                                 
                                 String comment = dataLink.getComment();
                                 if (comment != null && !comment.isEmpty()) {
@@ -100,7 +102,11 @@
                             
                             s += "<a"
                                     + (dataLinkHasUrl ? (" href=\"" + dataLink.getUrl() + "\"") : "")
-                                    + " class=\"rel-data-type-" + dataLink.getType().getIdentifier() + (dataType == null ? " species-data-link" : "") + "\""
+                                    + " class=\"rel-data-type-" + dataLink.getType().getIdentifier() 
+                                        + //(dataType == null ? 
+                                            " species-data-link".concat(dataLinkHasUrl ? "" : " species-data-link--disabled")
+                                            //: "")
+                                        + "\""
                                     + " title=\"" 
                                         + speciesDataEntry.getName() 
                                         + ": " + dataLink.getType().getLabel(cms) 
@@ -109,7 +115,9 @@
                                             " ("+dataLink.getNumYears()+" "+cms.labelUnicode("label.seapop-species-data.year").toLowerCase()+")") 
                                         + "\""
                                     + (dataLinkHasUrl ? " target=\"_blank\"" : "")
-                                    + ">" + linkText + "</a>";
+                                    + ">" 
+                                        + linkText 
+                                    + "</a>";
                             
                             if (dataType != null)
                                 s += "</div>";

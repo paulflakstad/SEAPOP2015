@@ -113,7 +113,11 @@
                             
                             s += "<a"
                                     + (dataLinkHasUrl ? (" href=\"" + dataLink.getUrl() + "\"") : "")
-                                    + " class=\"rel-data-type-" + dataLink.getType().getIdentifier() + (dataType == null ? " species-data-link" : "") + "\""
+                                    + " class=\"rel-data-type-" + dataLink.getType().getIdentifier() 
+                                        + //(dataType == null ? 
+                                            " species-data-link".concat(dataLinkHasUrl ? "" : " species-data-link--disabled")
+                                            //: "")
+                                        + "\""
                                     + " title=\"" 
                                         + speciesDataEntry.getName() 
                                         + ": " + dataLink.getType().getLabel(cms) 
