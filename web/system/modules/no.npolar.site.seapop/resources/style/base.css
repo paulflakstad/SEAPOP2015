@@ -20,10 +20,11 @@
 }
 
 /* Internet Explorer */
-@-ms-keyframes fadein {
+/* IE uses the non-prefixed version */
+/*@-ms-keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
-}
+}*/
 
 /* Opera */
 @-o-keyframes fadein {
@@ -1487,11 +1488,16 @@ h4.news-title {
 .cssanimations .fadein {
     opacity:0;
 }
-.cssanimations .overlay--full-screen.fadein {
-    animation:fadein 0.2s forwards;
+.cssanimations.overlay-open .overlay--full-screen.fadein {
+    /* first fade in the full-screen background overlay */
+    animation: fadein 0.2s forwards;
 }
-.cssanimations .overlay-dialog.fadein {
-    animation:fadein 0.3s forwards 0.2s;
+.cssanimations.overlay-open .overlay-dialog.fadein {
+    /* then fade in the dialog */
+    /*animation: fadein 0.3s 0.2s forwards;*/
+    /* This animation was dropped due to a bug in IE: */
+    /* IE persists opacity=0 after animation has completed, no matter what */
+    opacity: 1; 
 }
 body {
     /*position:relative;
